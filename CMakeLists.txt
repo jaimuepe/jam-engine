@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.9)
 
-set(TARGET_NAME glCamera)
+set(TARGET_NAME jam-engine)
 
 project(${TARGET_NAME} C CXX)
 
