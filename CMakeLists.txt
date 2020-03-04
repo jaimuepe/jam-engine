@@ -1,6 +1,4 @@
 
-#[[ this is a comment ]]
-
 cmake_minimum_required(VERSION 3.9)
 
 set(TARGET_NAME jam-engine)
@@ -21,19 +19,14 @@ find_package(Threads REQUIRED)
 find_package(OpenGL COMPONENTS OpenGL REQUIRED)
 find_package(Boost COMPONENTS filesystem REQUIRED)
 
-add_compile_definitions(MY_DEBUG)
+# [[ add_compile_definitions(MY_DEBUG) ]]
 
 include_directories(
     src
-    include
-	thirdParty/glad/include
-	thirdParty/glfw3/include
-	thirdParty/glm
-	${Boost_INCLUDE_DIR})
-
-if (UNIX)
-	link_directories(/usr/local/lib)
-endif()
+    thirdParty/glad/include
+    thirdParty/glfw3/include
+    thirdParty/glm
+    ${Boost_INCLUDE_DIR})
 
 set(SOURCE_FILES
     src/main.cpp
@@ -82,25 +75,21 @@ add_executable(
     ${SOURCE_FILES})
 
 if(MSVC)
-	target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
+    target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
 else()
-        target_compile_options(${TARGET_NAME} PRIVATE -Winline  #[[ -Werror
-               -pedantic-errors -Wall -Wextra -Wconversion -Wsign-conversion ]] )
+    target_compile_options(${TARGET_NAME} PRIVATE -Winline  #[[ -Werror
+           -pedantic-errors -Wall -Wextra -Wconversion -Wsign-conversion ]] )
 endif()
 
 if (EXISTS "${CMAKE_SOURCE_DIR}/resources")
-
-	if (UNIX)
-	
-		add_custom_target(copy_res_directory ALL
-			COMMAND ${CMAKE_COMMAND} -E copy_directory
-				"${CMAKE_SOURCE_DIR}/resources"
-				"${CMAKE_BINARY_DIR}/resources"
-			COMMENT "Copy res directory to build tree"
-			VERBATIM)
-		
-	endif()
-	
+    if (UNIX)
+        add_custom_target(copy_res_directory ALL
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+                    "${CMAKE_SOURCE_DIR}/resources"
+                    "${CMAKE_BINARY_DIR}/resources"
+            COMMENT "Copy res directory to build tree"
+            VERBATIM)
+    endif()
 endif()
 
 target_link_libraries(
@@ -108,9 +97,9 @@ target_link_libraries(
     PRIVATE glad stb
     glfw3
     spdlog::spdlog
-	${CMAKE_DL_LIBS}
-	${CMAKE_THREAD_LIBS_INIT}
-	${X11_LIBRARIES}
-	${OPENGL_LIBRARIES}
+    ${CMAKE_DL_LIBS}
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${X11_LIBRARIES}
+    ${OPENGL_LIBRARIES}
     ${Boost_FILESYSTEM_LIBRARY}
     ${Boost_TYPEINDEX_LIBRARY})

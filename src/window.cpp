@@ -45,7 +45,7 @@ Window::Window(int width, int height)
 
     // glfw window creation
     // --------------------
-    glfwWindow = glfwCreateWindow(width, height, "LearnOpenGL", NULL, NULL);
+    glfwWindow = glfwCreateWindow(width, height, "game", NULL, NULL);
     if (glfwWindow == NULL)
     {
         logging::fatal("Failed to create GLFW window");
