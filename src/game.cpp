@@ -1,8 +1,8 @@
 #include "game.h"
 
-#include <glad/glad.h>
+#include "glad/glad.h"
 
-#include <glm/gtc/matrix_transform.hpp>
+#include "glm/gtc/matrix_transform.hpp"
 
 #include "graphics/camera.h"
 #include "graphics/orthocamera.h"
@@ -17,7 +17,7 @@
 #include "objects/world.h"
 
 #include "io/input.h"
-#include <io/keys.h>
+#include "io/keys.h"
 
 #include "utils/logger.h"
 

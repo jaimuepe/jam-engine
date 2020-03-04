@@ -7,10 +7,7 @@ set(TARGET_NAME jam-engine)
 
 project(${TARGET_NAME} C CXX)
 
-find_package(glm REQUIRED)
-find_package(fmt REQUIRED)
-find_package(spdlog REQUIRED)
-find_package(Boost COMPONENTS filesystem REQUIRED)
+set(Boost_USE_STATIC_LIBS ON)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -19,14 +16,24 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+find_package(X11 REQUIRED)
+find_package(Threads REQUIRED)
+find_package(OpenGL COMPONENTS OpenGL REQUIRED)
+find_package(Boost COMPONENTS filesystem REQUIRED)
+
 add_compile_definitions(MY_DEBUG)
 
 include_directories(
-    /usr/local/include
     src
-    include)
+    include
+	thirdParty/glad/include
+	thirdParty/glfw3/include
+	thirdParty/glm
+	${Boost_INCLUDE_DIR})
 
-link_directories(/usr/local/lib)
+if (UNIX)
+	link_directories(/usr/local/lib)
+endif()
 
 set(SOURCE_FILES
     src/main.cpp
@@ -63,39 +70,47 @@ set(SOURCE_FILES
     src/utils/logger.h
     src/utils/macros.h)
 
-set(HEADER_FILES)
-
 add_subdirectory(thirdParty/glad)
+add_subdirectory(thirdParty/glfw3)
+add_subdirectory(thirdParty/glm)
+add_subdirectory(thirdParty/spdlog)
 add_subdirectory(thirdParty/stb)
 
 add_executable(
     ${TARGET_NAME}
-    ${SOURCE_FILES}
-    ${HEADER_FILES})
+    ${SOURCE_FILES})
 
 if(MSVC)
-  target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
+	target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
 else()
-  target_compile_options(${TARGET_NAME} PRIVATE -Winline -Werror
-      -pedantic-errors
-      -Wall -Wextra -Wconversion -Wsign-conversion)
+	target_compile_options(${TARGET_NAME} PRIVATE -Winline -Werror
+		-pedantic-errors
+		-Wall -Wextra -Wconversion -Wsign-conversion)
 endif()
 
 if (EXISTS "${CMAKE_SOURCE_DIR}/resources")
 
-    add_custom_target(copy_res_directory ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${CMAKE_SOURCE_DIR}/resources"
-            "${CMAKE_BINARY_DIR}/resources"
-        COMMENT "Copy res directory to build tree"
-        VERBATIM)
-
+	if (UNIX)
+	
+		add_custom_target(copy_res_directory ALL
+			COMMAND ${CMAKE_COMMAND} -E copy_directory
+				"${CMAKE_SOURCE_DIR}/resources"
+				"${CMAKE_BINARY_DIR}/resources"
+			COMMENT "Copy res directory to build tree"
+			VERBATIM)
+		
+	endif()
+	
 endif()
 
 target_link_libraries(
     ${TARGET_NAME}
-    PRIVATE glad stb fmt GL
-    glfw3 X11 pthread dl
+    PRIVATE glad stb
+    glfw3
     spdlog::spdlog
+	${CMAKE_DL_LIBS}
+	${CMAKE_THREAD_LIBS_INIT}
+	${X11_LIBRARIES}
+	${OPENGL_LIBRARIES}
     ${Boost_FILESYSTEM_LIBRARY}
     ${Boost_TYPEINDEX_LIBRARY})

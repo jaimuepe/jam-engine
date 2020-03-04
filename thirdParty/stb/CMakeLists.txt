@@ -1,12 +1,10 @@
 
+cmake_minimum_required(VERSION 3.9)
 
-project(stb C CXX)
+project(stb)
 
 set(SOURCE_FILES
     include/stb/stb_image.h)
 
-add_library(stb ${SOURCE_FILES})
-
-set_target_properties(stb PROPERTIES LINKER_LANGUAGE CXX)
-
-target_include_directories(stb SYSTEM PUBLIC include/)
+add_library(stb INTERFACE)
+target_include_directories(stb INTERFACE include/)

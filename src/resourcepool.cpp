@@ -5,12 +5,12 @@
 #include <sstream>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb/stb_image.h>
+#include "stb/stb_image.h"
 
 #include "glad/glad.h"
 
-#include <boost/dll.hpp>
-#include <boost/filesystem.hpp>
+#include "boost/dll.hpp"
+#include "boost/filesystem.hpp"
 
 #include "utils/logger.h"
 

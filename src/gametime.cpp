@@ -1,6 +1,6 @@
 #include "gametime.h"
 
-#include <GLFW/glfw3.h>
+#include "GLFW/glfw3.h"
 
 GameTime::GameTime(): deltaTime(0.0f), lastFrameTime(0.0f) {}
 

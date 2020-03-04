@@ -1,12 +1,12 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-#include "io/keys.h"
-
-#include <GLFW/glfw3.h>
-
 #include <vector>
 #include <functional>
+
+#include "io/keys.h"
+
+#include "GLFW/glfw3.h"
 
 class Game;
 class Window;

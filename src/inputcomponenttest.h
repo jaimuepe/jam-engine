@@ -55,7 +55,7 @@ public:
         owner.transform.translate(movement * deltaTime);
     }
 
-    float speed = 80.0f;
+    float speed = 160.0f;
 };
 
 #endif // INPUTCOMPONENTTEST_H
