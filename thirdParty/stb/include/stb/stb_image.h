@@ -640,7 +640,7 @@ typedef unsigned char validate_uint32[sizeof(stbi__uint32)==4 ? 1 : -1];
 // As a result, enabling SSE2 on 32-bit MinGW is dangerous when not
 // simultaneously enabling "-mstackrealign".
 //
-// See https://github.com/noobjects/stb/issues/81 for more information.
+// See https://github.com/nothings/stb/issues/81 for more information.
 //
 // So default to no SSE2 on 32-bit MinGW. If you've read this far and added
 // -mstackrealign to your build settings, feel free to #define STBI_MINGW_ENABLE_SSE2.
