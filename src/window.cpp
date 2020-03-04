@@ -3,11 +3,45 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "game.h"
+#include "objects/world.h"
 
-#include "logger.h"
+#include "utils/logger.h"
 
-Window::Window(int width, int height, Game* game)
+void framebufferSizeCallback(GLFWwindow* glfwWindow, int width, int height)
+{
+    void* userPointer = glfwGetWindowUserPointer(glfwWindow);
+
+    if (userPointer)
+    {
+        Game* game = static_cast<Game*>(userPointer);
+        Window* window = game->getWindow();
+
+        float fWidth = static_cast<float>(width);
+        float fHeight = static_cast<float>(height);
+
+        float fBaseWidth = static_cast<float>(window->baseWidth);
+        float fBaseHeight = static_cast<float>(window->baseHeight);
+
+        float ar = fWidth / fHeight;
+
+        float scaleW = fWidth / fBaseWidth;
+        float scaleH = fHeight / fBaseHeight;
+
+        if (ar > window->baseAspectRatio) {
+            scaleW = scaleH;
+        } else {
+            scaleH = scaleW;
+        }
+
+        float marginX = (fWidth - fBaseWidth * scaleW) * 0.5f;
+        float marginY = (fHeight - fBaseHeight * scaleH) * 0.5f;
+
+        glViewport((int) marginX, (int) marginY, (int) (fBaseWidth * scaleW), (int) (fBaseHeight * scaleH));
+    }
+}
+
+Window::Window(int width, int height)
+    : baseWidth(width), baseHeight(height), baseAspectRatio(static_cast<float>(width) / static_cast<float>(height))
 {
     // glfw: initialize and configure
     // ------------------------------
@@ -25,9 +59,8 @@ Window::Window(int width, int height, Game* game)
     glfwWindow = glfwCreateWindow(width, height, "LearnOpenGL", NULL, NULL);
     if (glfwWindow == NULL)
     {
-        Logger::instance().fatal("Failed to create GLFW window");
+        logging::fatal("Failed to create GLFW window");
         glfwTerminate();
-        state = -1;
         return;
     }
 
@@ -37,14 +70,18 @@ Window::Window(int width, int height, Game* game)
     // ---------------------------------------
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        Logger::instance().fatal("Failed to initialize GLAD");
-        state = -1;
+        logging::fatal("Failed to initialize GLAD");
         return;
     }
+}
 
+void Window::setup(Game* game)
+{
     glfwSetWindowUserPointer(glfwWindow, game);
 
-    state = 0;
+    glfwSetFramebufferSizeCallback(glfwWindow, framebufferSizeCallback);
+
+    framebufferSizeCallback(glfwWindow, baseWidth, baseHeight);
 }
 
 bool Window::shouldClose() const
@@ -56,7 +93,6 @@ void Window::getSize(int& width, int& height) const
 {
     glfwGetFramebufferSize(glfwWindow, &width, &height);
 }
-
 
 GLFWwindow* Window::getGLFWWindow() const
 {

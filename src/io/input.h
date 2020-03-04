@@ -1,6 +1,8 @@
 #ifndef INPUT_H
 #define INPUT_H
 
+#include "io/keys.h"
+
 #include <GLFW/glfw3.h>
 
 #include <vector>
@@ -9,17 +11,20 @@
 class Game;
 class Window;
 
+namespace io
+
+{
+
 typedef std::function<void(float, float)> cursorPosCallback;
-typedef std::function<void(int, int, int, int)> keyCallback;
 typedef std::function<void(float, float)> scrollCallback;
 
 class Input
 {
 public:
 
-    Input(Game* game);
+    Input() = default;
 
-    void addKeyCallback(const keyCallback& callback);
+    void setup(Game* game);
 
     void addCursorPosCallback(const cursorPosCallback& callback);
 
@@ -35,11 +40,8 @@ public:
 
 private:
 
-    Game* game;
+    int keyState[KEY_LAST]{};
 
-    int keyState[GLFW_KEY_LAST]{};
-
-    std::vector<keyCallback> keyCallbacks;
     std::vector<cursorPosCallback> mouseMovedCallbacks;
     std::vector<scrollCallback> scrollCallbacks;
 
@@ -52,5 +54,6 @@ private:
     static void glfwKeyCallback(GLFWwindow*, int key, int scancode, int action, int mods);
 };
 
+} // namespace io
 
 #endif // INPUT_H

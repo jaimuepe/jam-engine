@@ -1,17 +1,14 @@
 #include "texture2d.h"
 
-#include "./resourceManager.h"
-
-#include "./logger.h"
-
-#include <stb/stb_image.h>
+#include <string>
 
 #include <glad/glad.h>
 
-#include <string>
+#include "resourcepool.h"
 
+#include "utils/logger.h"
 
-namespace Graphics
+namespace graphics
 {
 
     void Texture2D::generate(unsigned char* data, int width, int height, int nChannels)

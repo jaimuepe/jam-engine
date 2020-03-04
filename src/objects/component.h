@@ -1,29 +1,30 @@
 #ifndef ICOMPONENT_H
 #define ICOMPONENT_H
 
+#include "utils/logger.h"
+
+#include "graphics/rendercontext.h"
+
+class GameTime;
+
+namespace objects
+{
+
 class Entity;
-
-#define COMPONENT_CONSTRUCTOR(TypeName, _renderable, _updateable) \
-    TypeName(Entity& owner) \
-    : Component(owner) \
-    { \
-        renderable = _renderable; \
-        updateable = _updateable; \
-    }
-
-#define NO_SETUP() \
-    void setup() override {}
 
 class Component
 {
 
 public:
 
-    Component(Entity& owner);
+    Component(objects::Entity& owner);
+    virtual ~Component();
 
     virtual void setup() = 0;
 
-    virtual ~Component();
+    virtual void update(const GameTime& gameTime);
+
+    virtual void render(const graphics::Context& context);
 
     bool isRenderable()
     {
@@ -37,10 +38,12 @@ public:
 
 protected:
 
-    Entity& owner;
+    objects::Entity& owner;
 
     bool renderable = false;
     bool updateable = false;
 };
+
+} // namespace objects
 
 #endif // ICOMPONENT_H

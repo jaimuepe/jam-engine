@@ -1,11 +1,13 @@
 
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
+#include "utils/logger.h"
 
 #include "game.h"
-#include "logger.h"
 
 int main()
 {
+
+    logging::setLevel(logging::level::debug);
+
     Game game;
     return 0;
 }

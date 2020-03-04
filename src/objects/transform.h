@@ -1,18 +1,30 @@
 #ifndef TRANSFORM_H
 #define TRANSFORM_H
 
+#include <cmath>
+
+#include "boost/math/constants/constants.hpp"
+
 #include "glm/vec2.hpp"
+
+constexpr float twoPi = boost::math::constants::two_pi<float>();
 
 class Transform
 {
 
+
 public:
 
-    void reset(glm::vec2 position, float rotation, glm::vec2 scale)
+    void reset(const glm::vec2& position, float rotation, const glm::vec2& scale)
     {
         this->position = position;
         this->rotation = rotation;
         this->scale = scale;
+    }
+
+    void setPosition(const glm::vec2& position)
+    {
+        this->position = position;
     }
 
     glm::vec2 getPosition() const
@@ -20,9 +32,19 @@ public:
         return position;
     }
 
+    void setRotation(float rotation)
+    {
+        this->rotation = rotation;
+    }
+
     float getRotation() const
     {
         return rotation;
+    }
+
+    void setScale(const glm::vec2& scale)
+    {
+        this->scale = scale;
     }
 
     glm::vec2 getScale() const
@@ -33,6 +55,11 @@ public:
     void translate(glm::vec2 displacement)
     {
         position += displacement;
+    }
+
+    void rotate(float increment)
+    {
+        rotation = std::fmod(rotation + increment, twoPi);
     }
 
 private:

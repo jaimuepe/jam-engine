@@ -3,7 +3,10 @@
 
 #include <glm/mat4x4.hpp>
 
-struct GraphicContext
+namespace graphics
+{
+
+struct Context
 {
 
 public:
@@ -12,5 +15,7 @@ public:
     glm::mat4 projection;
 
 };
+
+} // namespace graphics
 
 #endif // GRAPHICCONTEXT_H

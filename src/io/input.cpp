@@ -1,11 +1,15 @@
 
-#include "input.h"
-
-#include "game.h"
+#include "io/input.h"
 
 #include "window.h"
 
-Input::Input(Game* game)
+#include "game.h"
+
+namespace io
+
+{
+
+void Input::setup(Game* game)
 {
     GLFWwindow* window =  game->getWindow()->getGLFWWindow();
 
@@ -47,12 +51,7 @@ void Input::addScrollCallback(const scrollCallback &callback)
     scrollCallbacks.push_back(callback);
 }
 
-void Input::addKeyCallback(const keyCallback& callback)
-{
-    keyCallbacks.push_back(callback);
-}
-
-void Input::glfwKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void Input::glfwKeyCallback(GLFWwindow* window, int key, int, int action, int)
 {
 
     Game* game = static_cast<Game*>(glfwGetWindowUserPointer(window));
@@ -61,13 +60,6 @@ void Input::glfwKeyCallback(GLFWwindow* window, int key, int scancode, int actio
     if (input)
     {
         input->keyState[key] = action;
-
-        std::vector<keyCallback> callbacks = input->keyCallbacks;
-
-        for (size_t i = 0; i < callbacks.size(); i++)
-        {
-            callbacks[i](key, scancode, action, mods);
-        }
     }
 }
 
@@ -110,3 +102,5 @@ void Input::glfwScrollCallback(GLFWwindow* window, double xOffset, double)
         }
     }
 }
+
+} // namespace io

@@ -1,19 +1,33 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "objects/component.h"
-#include "transform.h"
-
-#include "objects/irenderablecomponent.h"
-#include "objects/iupdateablecomponent.h"
-
 #include <string>
 #include <map>
 
-class ConstructorContext;
+#include "objects/component.h"
 
-class Input;
+#include "objects/transform.h"
+
+#include "io/input.h"
+
+#include "utils/macros.h"
+
+#include "boost/type_index.hpp"
+
+namespace io
+{
+    class Input;
+}
+
+class ResourcePool;
 class Transform;
+
+class GameTime;
+
+namespace objects
+{
+
+class ConstructorContext;
 class World;
 
 class Entity
@@ -25,14 +39,35 @@ public:
 
     virtual ~Entity();
 
-    virtual void setup();
+    EMPTY_SETUP_NO_ARGS()
 
-    void update(float deltaTime);
-    void render(const GraphicContext& context);
+    void update(const GameTime& gameTime);
+    void render(const graphics::Context& context);
 
     void destroy();
 
     Transform transform;
+
+    template<class T>
+    T* add()
+    {
+        std::string prettyName = boost::typeindex::type_id<T>().pretty_name();
+
+        auto it = components.find(prettyName);
+        if (it == components.end())
+        {
+            return this->add<T>(prettyName);
+        }
+
+        int index = 0;
+
+        while ((it = components.find(prettyName + std::to_string(index))) != components.end())
+        {
+            index++;
+        }
+
+        return this->add<T>(prettyName + std::to_string(index));
+    }
 
     template<class T>
     T* add(const std::string& name)
@@ -44,6 +79,8 @@ public:
         component->setup();
 
         components[name] = component;
+
+        logging::debug("Added component " + name + " to entity " + this->name);
 
         if (!renderable && component->isRenderable())
         {
@@ -80,7 +117,8 @@ public:
     }
 
     World* getWorld() const;
-    Input* getInput() const;
+    io::Input* getInput() const;
+    ResourcePool* getResourcePool() const;
 
 private:
 
@@ -88,12 +126,15 @@ private:
     bool updateable = false;
 
     World* world;
-    Input* input;
+    io::Input* input;
+    ResourcePool* resourcePool;
 
     std::string name;
 
     std::map<std::string, Component*> components;
 
 };
+
+} // namespace objects
 
 #endif // ENTITY_H

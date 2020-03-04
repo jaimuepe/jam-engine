@@ -9,7 +9,14 @@ class Window
 
 public:
 
-    Window(int width, int height, Game* game);
+    const int baseWidth;
+    const int baseHeight;
+
+    const float baseAspectRatio;
+
+    Window(int width, int height);
+
+    void setup(Game* game);
 
     void getSize(int& width, int& height) const;
 
@@ -19,7 +26,6 @@ public:
 
 private:
 
-    int state;
     GLFWwindow* glfwWindow;
 };
 

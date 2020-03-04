@@ -11,9 +11,12 @@ public:
 
     float getDeltaTime() const;
 
+    float getCurrentFrameTime() const;
+
 private:
 
     float deltaTime;
+    float currentFrameTime;
     float lastFrameTime;
 
 };

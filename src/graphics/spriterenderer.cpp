@@ -1,35 +1,32 @@
 #include "spriterenderer.h"
 
-#include "logger.h"
+#include "glm/gtc/matrix_transform.hpp"
+
+#include "utils/logger.h"
 
 #include "objects/entity.h"
 
-#include "glm/gtc/matrix_transform.hpp"
+#include "resourcepool.h"
 
-namespace Graphics
+namespace graphics
 {
-
-    SpriteRenderer::~SpriteRenderer()
-    {
-        Logger::instance().debug("Calling ~SpriteRenderer");
-    }
-
     void SpriteRenderer::setup()
     {
-        shader = ResourceManager::instance().getShader("defaultShader");
+        shader = owner.getResourcePool()->getShader("default");
+
+#ifdef MY_DEBUG
+        debugShader = owner.getResourcePool()->getShader("spriteRendererDebug");
+#endif
 
         GLuint vbo;
 
         GLfloat vertices[] = {
 
             // Pos      // Tex
+            0.0f, 0.0f, 0.0f, 0.0f,
             0.0f, 1.0f, 0.0f, 1.0f,
             1.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 0.0f,
-
-            0.0f, 1.0f, 0.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 0.0f, 1.0f, 0.0f
+            1.0f, 1.0f, 1.0f, 1.0f
         };
 
         // OpenGL 4.5 / ARB_direct_state_access
@@ -49,22 +46,29 @@ namespace Graphics
         glVertexArrayVertexBuffer(vao, 0, vbo, 0, 4 * sizeof(float));
     }
 
-    void SpriteRenderer::render(const GraphicContext& context)
+    void SpriteRenderer::render(const graphics::Context& context)
     {
         glm::vec2 position = owner.transform.getPosition();
         float rotation = owner.transform.getRotation();
-        glm::vec2 scale = owner.transform.getScale();
+        glm::vec2 size = owner.transform.getScale();
 
         if (texture.ID > 0)
         {
-            scale.x *= static_cast<float>(texture.getWidth());
-            scale.y *= static_cast<float>(texture.getHeight());
+            size.x *= static_cast<float>(texture.getWidth());
+            size.y *= static_cast<float>(texture.getHeight());
         }
 
+        float halfWidth = size.x * 0.5f;
+        float halfHeight = size.y * 0.5f;
+
         glm::mat4 model{1.0f};
-        model = glm::translate(model, glm::vec3(position, 1.0f));
+        model = glm::translate(model, glm::vec3{position, 0.0f});
+
+        model = glm::translate(model, glm::vec3{halfWidth, halfHeight, 0.0f});
         model = glm::rotate(model, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::scale(model, glm::vec3(scale, 1.0f));
+        model = glm::translate(model, glm::vec3{-halfWidth, -halfHeight, 0.0f});
+
+        model = glm::scale(model, glm::vec3(size, 1.0f));
 
         shader.use();
 
@@ -79,7 +83,25 @@ namespace Graphics
         }
 
         glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+#ifdef MY_DEBUG
+
+            debugShader.use();
+            debugShader.setMat4("model", model);
+            debugShader.setMat4("view", context.view);
+            debugShader.setMat4("projection", context.projection);
+
+            GLint polygonMode;
+            glGetIntegerv(GL_POLYGON_MODE, &polygonMode);
+
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+            glPolygonMode(GL_FRONT_AND_BACK, static_cast<GLenum>(polygonMode));
+
+#endif
+
         glBindVertexArray(0);
     }
 }

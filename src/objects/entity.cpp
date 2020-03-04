@@ -1,49 +1,51 @@
 #include "entity.h"
 
-#include "constructorContext.h"
+#include "gametime.h"
 
-#include "world.h"
-#include "input.h"
-#include "transform.h"
+#include "objects/constructorContext.h"
 
-#include "logger.h"
+#include "resourcepool.h"
 
-#define _ENTITY_CONSTRUCTOR_
+#include "objects/world.h"
+#include "io/input.h"
+#include "objects/transform.h"
+
+#include "utils/logger.h"
+
+namespace objects
+
+{
 
 Entity::Entity(const ConstructorContext& context):
-    world(context.world), input(context.input), name(context.name)
+    world(context.world), input(context.input), resourcePool(context.resourcePool), name(context.name)
 {
     transform.reset(context.position, context.rotation, context.scale);
 }
 
 Entity::~Entity()
 {
-    Logger::instance().debug("Destroying entity " + name);
+    logging::debug("Destroying entity " + name);
     destroy();
 }
 
-void Entity::setup()
-{
-}
-
-void Entity::update(float deltaTime)
+void Entity::update(const GameTime& gameTime)
 {
     for (auto &comp : components)
     {
         if (comp.second->isUpdateable())
         {
-            dynamic_cast<IUpdateableComponent*>(comp.second)->update(deltaTime);
+            comp.second->update(gameTime);
         }
     }
 }
 
-void Entity::render(const GraphicContext& context)
+void Entity::render(const graphics::Context& context)
 {
     for (auto &comp : components)
     {
         if (comp.second->isRenderable())
         {
-            dynamic_cast<IRenderableComponent*>(comp.second)->render(context);
+            comp.second->render(context);
         }
     }
 }
@@ -62,7 +64,14 @@ World* Entity::getWorld() const
     return world;
 }
 
-Input* Entity::getInput() const
+io::Input* Entity::getInput() const
 {
     return input;
 }
+
+ResourcePool* Entity::getResourcePool() const
+{
+    return resourcePool;
+}
+
+} // namespace objects

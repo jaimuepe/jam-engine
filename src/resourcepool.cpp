@@ -1,47 +1,40 @@
-#include "resourceManager.h"
-
-#include "logger.h"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb/stb_image.h>
-
-#include <boost/dll.hpp>
-#include <boost/filesystem.hpp>
-
-#include "glad/glad.h"
+#include "resourcepool.h"
 
 #include <fstream>
 #include <iostream>
 #include <sstream>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb/stb_image.h>
+
+#include "glad/glad.h"
+
+#include <boost/dll.hpp>
+#include <boost/filesystem.hpp>
+
+#include "utils/logger.h"
+
+#include "graphics/texture2d.h"
+#include "graphics/shader.h"
+
 static const std::string resourcesPath = boost::dll::program_location().parent_path().string() + "/resources/";
 
-ResourceManager::ResourceManager()
+void ResourcePool::clear()
 {
-    // stbi_set_flip_vertically_on_load(true);
-}
-
-ResourceManager::~ResourceManager()
-{
-    clear();
-}
-
-void ResourceManager::clear()
-{
-    for(std::map<std::string, Graphics::Shader>::iterator itr = shaders.begin(); itr != shaders.end(); itr++)
+    for(std::map<std::string, graphics::Shader>::iterator itr = shaders.begin(); itr != shaders.end(); itr++)
     {
          glDeleteProgram(itr->second.ID);
     }
     shaders.clear();
 
-    for(std::map<std::string, Graphics::Texture2D>::iterator itr = textures.begin(); itr != textures.end(); itr++)
+    for(std::map<std::string, graphics::Texture2D>::iterator itr = textures.begin(); itr != textures.end(); itr++)
     {
         glDeleteTextures(1, &itr->second.ID);
     }
-    shaders.clear();
+    textures.clear();
 }
 
-Graphics::Shader ResourceManager::loadShader(const char* vShaderFile, const char* fShaderFile, const std::string& shaderName)
+graphics::Shader ResourcePool::loadShader(const char* vShaderFile, const char* fShaderFile, const std::string& shaderName)
 {
 
     static const std::string shadersPath = resourcesPath + "shaders/";
@@ -76,7 +69,7 @@ Graphics::Shader ResourceManager::loadShader(const char* vShaderFile, const char
         std::cout << "ERROR::SHADER: Failed to read shader files" << std::endl;
     }
 
-    Graphics::Shader shader;
+    graphics::Shader shader;
     shader.compile(vertexCode.c_str(), fragmentCode.c_str());
 
     shaders[shaderName] = shader;
@@ -84,12 +77,12 @@ Graphics::Shader ResourceManager::loadShader(const char* vShaderFile, const char
     return shader;
 }
 
-Graphics::Shader ResourceManager::getShader(const std::string& shaderName)
+graphics::Shader ResourcePool::getShader(const std::string& shaderName)
 {
     return shaders[shaderName];
 }
 
-Graphics::Texture2D ResourceManager::loadTexture(const char* textureFile, const std::string& texName)
+graphics::Texture2D ResourcePool::loadTexture(const char* textureFile, const std::string& texName)
 {
 
     static const std::string texturesPath = resourcesPath + "textures/";
@@ -102,7 +95,7 @@ Graphics::Texture2D ResourceManager::loadTexture(const char* textureFile, const 
 
     unsigned char* data = stbi_load(texPath.c_str(), &width, &height, &nChannels, 0);
 
-    Graphics::Texture2D tex;
+    graphics::Texture2D tex;
     tex.generate(data, width, height, nChannels);
 
     textures[texName] = tex;
@@ -112,13 +105,7 @@ Graphics::Texture2D ResourceManager::loadTexture(const char* textureFile, const 
     return tex;
 }
 
-Graphics::Texture2D ResourceManager::getTexture(const std::string& texName)
+graphics::Texture2D ResourcePool::getTexture(const std::string& texName)
 {
     return textures[texName];
-}
-
-ResourceManager& ResourceManager::instance()
-{
-    static ResourceManager instance;
-    return instance;
 }

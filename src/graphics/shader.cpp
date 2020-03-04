@@ -3,13 +3,13 @@
 
 #include "glad/glad.h"
 
-#include "./resourceManager.h"
+#include "resourcepool.h"
 
-#include "./logger.h"
+#include "utils/logger.h"
 
 #include <glm/gtc/type_ptr.hpp>
 
-namespace Graphics
+namespace graphics
 {
 
     void Shader::compile(const char* vCode, const char* fCode)
@@ -32,8 +32,8 @@ namespace Graphics
         if (!success)
         {
             glGetShaderInfoLog(vertexId, 512, NULL, infoLog);
-            Logger::instance().error("SHADER::VERTEX::COMPILATION_FAILED");
-            Logger::instance().error(infoLog);
+            logging::error("SHADER::VERTEX::COMPILATION_FAILED");
+            logging::error(infoLog);
         }
 
         // fragment shader
@@ -48,8 +48,8 @@ namespace Graphics
         if (!success)
         {
             glGetShaderInfoLog(fragId, 512, NULL, infoLog);
-            Logger::instance().error("SHADER::FRAGMENT::COMPILATION_FAILED");
-            Logger::instance().error(infoLog);
+            logging::error("SHADER::FRAGMENT::COMPILATION_FAILED");
+            logging::error(infoLog);
         }
 
         // program
@@ -65,8 +65,8 @@ namespace Graphics
         if(!success)
         {
             glGetProgramInfoLog(ID, 512, NULL, infoLog);
-            Logger::instance().error("SHADER::PROGRAM::LINKING_FAILED");
-            Logger::instance().error(infoLog);
+            logging::error("SHADER::PROGRAM::LINKING_FAILED");
+            logging::error(infoLog);
         }
 
         // delete the shaders as they're linked into our program now and no longer necessary

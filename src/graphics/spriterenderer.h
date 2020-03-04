@@ -1,62 +1,64 @@
 #ifndef SPRITERENDERER_H
 #define SPRITERENDERER_H
 
+#include <string>
+
+#include "glad/glad.h"
+
 #include "objects/component.h"
 
 #include "graphics/shader.h"
 #include "graphics/texture2d.h"
 
-#include "resourceManager.h"
+#include "utils/macros.h"
 
-#include "objects/camera.h"
-
-#include "objects/irenderablecomponent.h"
-
-#include "glad/glad.h"
-
-#include <string>
-
-namespace Graphics
+namespace graphics
 {
-    class SpriteRenderer : public Component, public IRenderableComponent
+
+class SpriteRenderer : public objects::Component
+{
+
+public:
+
+    COMPONENT_CONSTRUCTOR_RENDERABLE(SpriteRenderer)
+    CLASS_DESTRUCTOR(SpriteRenderer)
+
+    void setup() override;
+
+    virtual void render(const graphics::Context& context) override;
+
+    void setShader(const Shader& shader)
     {
+        this->shader = shader;
+    }
 
-    public:
+    void setTexture(const Texture2D& texture)
+    {
+        this->texture = texture;
+    }
 
-        COMPONENT_CONSTRUCTOR(SpriteRenderer, true, false)
+    void setTint(glm::vec3 tint)
+    {
+        this->tint = tint;
+    }
 
-        ~SpriteRenderer();
+private:
 
-        void setup() override;
+    // TODO default shader?
 
-        virtual void render(const GraphicContext& context) override;
+    GLuint vao;
 
-        void setShader(const Shader& shader)
-        {
-            this->shader = shader;
-        }
+    Shader shader;
 
-        void setTexture(const Texture2D& texture)
-        {
-            this->texture = texture;
-        }
+#ifdef MY_DEBUG
+    Shader debugShader;
+#endif
 
-        void setTint(glm::vec3 tint)
-        {
-            this->tint = tint;
-        }
+    Texture2D texture;
 
-    private:
+    glm::vec3 tint{1.0};
+};
 
-        // TODO default shader?
-
-        GLuint vao;
-
-        Shader shader;
-        Texture2D texture;
-
-        glm::vec3 tint{1.0};
-    };
-}
+} // namespace graphics
 
 #endif // SPRITERENDERER_H
