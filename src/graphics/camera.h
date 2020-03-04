@@ -21,7 +21,7 @@ public:
     COMPONENT_CONSTRUCTOR(Camera)
 
     virtual glm::mat4 getView() const = 0;
-    virtual glm::mat4 getProjection(const Window& window) const = 0;
+    virtual glm::mat4 getProjection() const = 0;
 };
 
 } // namespace graphics

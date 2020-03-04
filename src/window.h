@@ -4,15 +4,15 @@
 struct GLFWwindow;
 class Game;
 
+constexpr float internalResolutionX = 1920.0f;
+constexpr float internalResolutionY = 1080.0f;
+
+constexpr float internalResolutionAspectRatio = internalResolutionX / internalResolutionY;
+
 class Window
 {
 
 public:
-
-    const int baseWidth;
-    const int baseHeight;
-
-    const float baseAspectRatio;
 
     Window(int width, int height);
 

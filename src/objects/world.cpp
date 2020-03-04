@@ -43,7 +43,6 @@ Entity* World::create(const std::string &name)
     return instance;
 }
 
-
 graphics::Camera* World::getMainCamera() const
 {
     return this->mainCamera;

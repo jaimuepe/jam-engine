@@ -16,13 +16,23 @@ class OrthoCamera : public Camera
 {
 public:
 
-    CAMERA_CONSTRUCTOR(OrthoCamera)
+    OrthoCamera(objects::Entity& owner);
+
     CLASS_DESTRUCTOR(OrthoCamera)
 
     EMPTY_SETUP_NO_ARGS()
 
     virtual glm::mat4 getView() const override;
-    virtual glm::mat4 getProjection(const Window& window) const override;
+    virtual glm::mat4 getProjection() const override;
+
+    void setSize(float size);
+
+private:
+
+    float size;
+
+    float halfWidth;
+    float halfHeight;
 };
 
 } // namespace graphics

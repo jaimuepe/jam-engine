@@ -20,15 +20,6 @@ namespace graphics
 
         GLuint vbo;
 
-        GLfloat vertices[] = {
-
-            // Pos      // Tex
-            0.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 1.0f, 0.0f,
-            1.0f, 1.0f, 1.0f, 1.0f
-        };
-
         // OpenGL 4.5 / ARB_direct_state_access
 
         // ---- VBO ----

@@ -67,6 +67,7 @@ set(SOURCE_FILES
     src/graphics/texture2d.cpp
     src/resourcepool.h
     src/resourcepool.cpp
+    src/utils/constants.h
     src/utils/logger.h
     src/utils/macros.h)
 
@@ -83,9 +84,8 @@ add_executable(
 if(MSVC)
 	target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
 else()
-	target_compile_options(${TARGET_NAME} PRIVATE -Winline -Werror
-		-pedantic-errors
-		-Wall -Wextra -Wconversion -Wsign-conversion)
+        target_compile_options(${TARGET_NAME} PRIVATE -Winline  #[[ -Werror
+               -pedantic-errors -Wall -Wextra -Wconversion -Wsign-conversion ]] )
 endif()
 
 if (EXISTS "${CMAKE_SOURCE_DIR}/resources")

@@ -3,15 +3,12 @@
 
 #include <cmath>
 
-#include "boost/math/constants/constants.hpp"
-
 #include "glm/vec2.hpp"
 
-constexpr float twoPi = boost::math::constants::two_pi<float>();
+#include "utils/constants.h"
 
 class Transform
 {
-
 
 public:
 
@@ -59,7 +56,7 @@ public:
 
     void rotate(float increment)
     {
-        rotation = std::fmod(rotation + increment, twoPi);
+        rotation = std::fmod(rotation + increment, constants::twoPi);
     }
 
 private:

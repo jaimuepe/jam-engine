@@ -107,5 +107,11 @@ graphics::Texture2D ResourcePool::loadTexture(const char* textureFile, const std
 
 graphics::Texture2D ResourcePool::getTexture(const std::string& texName)
 {
-    return textures[texName];
+    auto it = textures.find(texName);
+    if (it == textures.end())
+    {
+        logging::warn("Texture " + texName + " not found!");
+    }
+
+    return it->second;
 }

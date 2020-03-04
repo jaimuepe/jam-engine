@@ -7,41 +7,30 @@
 
 #include "utils/logger.h"
 
-void framebufferSizeCallback(GLFWwindow* glfwWindow, int width, int height)
+void framebufferSizeCallback(GLFWwindow*, int width, int height)
 {
-    void* userPointer = glfwGetWindowUserPointer(glfwWindow);
 
-    if (userPointer)
-    {
-        Game* game = static_cast<Game*>(userPointer);
-        Window* window = game->getWindow();
+    float fWidth = static_cast<float>(width);
+    float fHeight = static_cast<float>(height);
 
-        float fWidth = static_cast<float>(width);
-        float fHeight = static_cast<float>(height);
+    float ar = fWidth / fHeight;
 
-        float fBaseWidth = static_cast<float>(window->baseWidth);
-        float fBaseHeight = static_cast<float>(window->baseHeight);
+    float scaleW = fWidth / internalResolutionX;
+    float scaleH = fHeight / internalResolutionY;
 
-        float ar = fWidth / fHeight;
-
-        float scaleW = fWidth / fBaseWidth;
-        float scaleH = fHeight / fBaseHeight;
-
-        if (ar > window->baseAspectRatio) {
-            scaleW = scaleH;
-        } else {
-            scaleH = scaleW;
-        }
-
-        float marginX = (fWidth - fBaseWidth * scaleW) * 0.5f;
-        float marginY = (fHeight - fBaseHeight * scaleH) * 0.5f;
-
-        glViewport((int) marginX, (int) marginY, (int) (fBaseWidth * scaleW), (int) (fBaseHeight * scaleH));
+    if (ar > internalResolutionAspectRatio) {
+        scaleW = scaleH;
+    } else {
+        scaleH = scaleW;
     }
+
+    float marginX = (fWidth - internalResolutionX * scaleW) * 0.5f;
+    float marginY = (fHeight - internalResolutionY * scaleH) * 0.5f;
+
+    glViewport((int) marginX, (int) marginY, (int) (internalResolutionX * scaleW), (int) (internalResolutionY * scaleH));
 }
 
 Window::Window(int width, int height)
-    : baseWidth(width), baseHeight(height), baseAspectRatio(static_cast<float>(width) / static_cast<float>(height))
 {
     // glfw: initialize and configure
     // ------------------------------
@@ -81,7 +70,11 @@ void Window::setup(Game* game)
 
     glfwSetFramebufferSizeCallback(glfwWindow, framebufferSizeCallback);
 
-    framebufferSizeCallback(glfwWindow, baseWidth, baseHeight);
+    int width;
+    int height;
+    getSize(width, height);
+
+    framebufferSizeCallback(glfwWindow, width, height);
 }
 
 bool Window::shouldClose() const
