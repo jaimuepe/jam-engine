@@ -21,20 +21,21 @@
 
 #include "utils/logger.h"
 
-#include "inputcomponenttest.h"
+#include "shipcontroller.h"
 
 #include "resourcepool.h"
 
 Game::Game()
 {
-    resourcePool = new ResourcePool();
+    window = new Window(1024, 768);
     input = new io::Input();
     world = new objects::World();
-    window = new Window(1024, 768);
+    resourcePool = new ResourcePool();
 
     world->setup(this);
     input->setup(this);
     window->setup(this);
+    resourcePool->setup();
 
     glEnable(GL_CULL_FACE);
 
@@ -66,16 +67,8 @@ Game::Game()
 void Game::loadResources()
 {
     resourcePool->loadShader("defaultUnlitShader.vs", "defaultUnlitShader.fs", "default");
-    resourcePool->loadTexture("homer.png", "homer");
-    resourcePool->loadTexture("doggo_1080.jpg", "doggo1080");
-
-    /*
-    resourcePool->loadTexture("container.jpg", "container");
-    resourcePool->loadTexture("awesomeface.png", "awesomeface");
-    resourcePool->loadTexture("mr_burns.png", "burns");
-    resourcePool->loadTexture("doggo.jpg", "doggo");
-    */
-
+    resourcePool->loadTexture("backgrounds/purple.png", "bg1");
+    resourcePool->loadTexture("playerShip1_red.png", "ship1");
 
 #ifdef MY_DEBUG
     resourcePool->loadShader("spriteRendererBoundingBox.vs", "spriteRendererBoundingBox.fs", "spriteRendererDebug");
@@ -86,31 +79,26 @@ void Game::loadResources()
 void Game::start()
 {
 
-    graphics::Texture2D bg = resourcePool->getTexture("doggo1080");
-    graphics::Texture2D homer = resourcePool->getTexture("homer");
-
-    objects::Entity* bgEntity = world->create("bg");
-    bgEntity->transform.setPosition(glm::vec2{-1920.0f * 0.5f, -1080 * 0.5f});
-
-    graphics::SpriteRenderer* sr = bgEntity->add<graphics::SpriteRenderer>();
-    sr->setTexture(bg);
-
-    objects::Entity* playerEntity = world->create("player");
-
-    graphics::SpriteRenderer* srPlayer = playerEntity->add<graphics::SpriteRenderer>();
-    srPlayer->setTexture(homer);
-
-    playerEntity->add<InputComponentTest>();
-
-    int width;
-    int height;
-    window->getSize(width, height);
-
-    auto camEntity = world->create("mainCam");
-
-    auto camera = camEntity->add<graphics::OrthoCamera>();
+    objects::Entity* camEntity = world->create("mainCam");
+    graphics::OrthoCamera* camera = camEntity->add<graphics::OrthoCamera>();
 
     world->setMainCamera(camera);
+
+    objects::Entity* bgEntity = world->create("bg");
+    bgEntity->transform.setScale(glm::vec2{8.0f, 5.0f});
+    bgEntity->transform.setPosition(world->getMainCamera()->viewportToWorld(0.0f, 1.0f));
+
+    graphics::SpriteRenderer* sr = bgEntity->add<graphics::SpriteRenderer>();
+    sr->setTexture("bg1");
+    sr->setRepeat(true);
+
+    objects::Entity* playerEntity = world->create("player1");
+    playerEntity->transform.setPosition(world->getMainCamera()->viewportToWorld(0.5f, 0.5f));
+
+    graphics::SpriteRenderer* srPlayer = playerEntity->add<graphics::SpriteRenderer>();
+    srPlayer->setTexture("ship1");
+
+    playerEntity->add<ShipController>();
 }
 
 Game::~Game()
@@ -178,6 +166,22 @@ void Game::processInput()
     if (input->isKeyDown(KEY_ESCAPE))
     {
         glfwSetWindowShouldClose(window->getGLFWWindow(), true);
+    }
+
+    if (input->isKeyDown(KEY_F))
+    {
+        GLFWmonitor* monitor = glfwGetWindowMonitor(window->getGLFWWindow());
+
+        if (monitor == NULL)
+        {
+            monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+            glfwSetWindowMonitor(window->getGLFWWindow(), monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+        }
+        else
+        {
+            glfwSetWindowMonitor(window->getGLFWWindow(), NULL, 0, 0, 800, 600, 0);
+        }
     }
 
 #ifdef MY_DEBUG

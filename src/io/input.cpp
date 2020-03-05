@@ -5,6 +5,8 @@
 
 #include "game.h"
 
+#include "utils/logger.h"
+
 namespace io
 
 {
@@ -59,6 +61,7 @@ void Input::glfwKeyCallback(GLFWwindow* window, int key, int, int action, int)
 
     if (input)
     {
+        logging::debug(action);
         input->keyState[key] = action;
     }
 }

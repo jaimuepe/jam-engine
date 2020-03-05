@@ -22,8 +22,11 @@ public:
 
     EMPTY_SETUP_NO_ARGS()
 
+    virtual glm::vec2 viewportToWorld(float x, float y, float z) const override;
+
     virtual glm::mat4 getView() const override;
     virtual glm::mat4 getProjection() const override;
+
 
     void setSize(float size);
 

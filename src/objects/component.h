@@ -5,6 +5,8 @@
 
 #include "graphics/rendercontext.h"
 
+#include "utils/macros.h"
+
 class GameTime;
 
 namespace objects
@@ -19,6 +21,8 @@ public:
 
     Component(objects::Entity& owner);
     virtual ~Component();
+
+    CLASS_NON_COPYABLE(Component)
 
     virtual void setup() = 0;
 

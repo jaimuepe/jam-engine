@@ -43,4 +43,8 @@
         renderable = false; \
     }
 
+#define CLASS_NON_COPYABLE(TypeName) \
+    TypeName(TypeName const&) = delete; \
+    void operator=(TypeName const&) = delete;
+
 #endif // MACROS_H

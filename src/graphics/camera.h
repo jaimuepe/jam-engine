@@ -22,6 +22,8 @@ public:
 
     virtual glm::mat4 getView() const = 0;
     virtual glm::mat4 getProjection() const = 0;
+
+    virtual glm::vec2 viewportToWorld(float x, float y, float z = 0.0f) const = 0;
 };
 
 } // namespace graphics

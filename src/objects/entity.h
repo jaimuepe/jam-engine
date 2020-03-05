@@ -36,9 +36,9 @@ class Entity
 public:
 
     Entity(const ConstructorContext& context);
-
     virtual ~Entity();
 
+    CLASS_NON_COPYABLE(Entity)
     EMPTY_SETUP_NO_ARGS()
 
     void update(const GameTime& gameTime);

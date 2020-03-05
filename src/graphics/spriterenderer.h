@@ -15,17 +15,6 @@
 namespace graphics
 {
 
-namespace
-{
-    constexpr GLfloat vertices[] = {
-        // Pos      // Tex
-        0.0f, 0.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f,
-        1.0f, 1.0f, 1.0f, 1.0f
-    };
-}
-
 class SpriteRenderer : public objects::Component
 {
 
@@ -38,32 +27,40 @@ public:
 
     virtual void render(const graphics::Context& context) override;
 
-    void setShader(const Shader& shader)
-    {
-        this->shader = shader;
-    }
+    void setShader(const std::string& shader);
 
-    void setTexture(const Texture2D& texture)
-    {
-        this->texture = texture;
-    }
+    void setShader(const Shader& shader);
 
-    void setTint(glm::vec3 tint)
-    {
-        this->tint = tint;
-    }
+    void setTexture(const std::string& texName);
+
+    void setTexture(const Texture2D& texture);
+
+    void setTint(glm::vec3 tint);
+
+    void setRepeat(bool repeat);
 
 private:
 
     // TODO default shader?
 
     GLuint vao;
+    GLuint vbo;
 
     Shader shader;
+
+    GLfloat vertices[16] = {
+        // Pos      // Tex
+        0.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 1.0f, 0.0f,
+        1.0f, 1.0f, 1.0f, 1.0f
+    };
 
 #ifdef MY_DEBUG
     Shader debugShader;
 #endif
+
+    bool repeat;
 
     Texture2D texture;
 

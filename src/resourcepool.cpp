@@ -19,6 +19,11 @@
 
 static const std::string resourcesPath = boost::dll::program_location().parent_path().string() + "/resources/";
 
+void ResourcePool::setup()
+{
+    loadTexture("fallback/nullTexture.png", "__nullTexture");
+}
+
 void ResourcePool::clear()
 {
     for(std::map<std::string, graphics::Shader>::iterator itr = shaders.begin(); itr != shaders.end(); itr++)
@@ -82,9 +87,8 @@ graphics::Shader ResourcePool::getShader(const std::string& shaderName)
     return shaders[shaderName];
 }
 
-graphics::Texture2D ResourcePool::loadTexture(const char* textureFile, const std::string& texName)
+void ResourcePool::loadTexture(const char* textureFile, const std::string& texName)
 {
-
     static const std::string texturesPath = resourcesPath + "textures/";
 
     const std::string texPath =  texturesPath + textureFile;
@@ -95,14 +99,19 @@ graphics::Texture2D ResourcePool::loadTexture(const char* textureFile, const std
 
     unsigned char* data = stbi_load(texPath.c_str(), &width, &height, &nChannels, 0);
 
-    graphics::Texture2D tex;
-    tex.generate(data, width, height, nChannels);
+    if (data)
+    {
+        graphics::Texture2D tex;
+        tex.generate(data, width, height, nChannels);
 
-    textures[texName] = tex;
+        textures[texName] = tex;
 
-    stbi_image_free(data);
-
-    return tex;
+        stbi_image_free(data);
+    }
+    else
+    {
+        logging::error("Could not load texture " + texName + "!");
+    }
 }
 
 graphics::Texture2D ResourcePool::getTexture(const std::string& texName)
@@ -111,6 +120,7 @@ graphics::Texture2D ResourcePool::getTexture(const std::string& texName)
     if (it == textures.end())
     {
         logging::warn("Texture " + texName + " not found!");
+        return getTexture("__nullTexture");
     }
 
     return it->second;

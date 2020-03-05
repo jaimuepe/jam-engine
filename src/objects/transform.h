@@ -56,7 +56,7 @@ public:
 
     void rotate(float increment)
     {
-        rotation = std::fmod(rotation + increment, constants::twoPi);
+        rotation = std::fmod(rotation + increment, constants::math::twoPi);
     }
 
 private:

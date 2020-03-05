@@ -27,7 +27,7 @@ namespace graphics
         glTextureParameteri(ID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTextureParameteri(ID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        glGenerateTextureMipmap(ID);
+        // glGenerateTextureMipmap(ID);
 
         this->width = width;
         this->height = height;

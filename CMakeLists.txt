@@ -19,7 +19,7 @@ find_package(Threads REQUIRED)
 find_package(OpenGL COMPONENTS OpenGL REQUIRED)
 find_package(Boost COMPONENTS filesystem REQUIRED)
 
-# [[ add_compile_definitions(MY_DEBUG) ]]
+add_compile_definitions(MY_DEBUG)
 
 include_directories(
     src
@@ -36,7 +36,8 @@ set(SOURCE_FILES
     src/gametime.cpp
     src/window.h
     src/window.cpp
-    src/inputcomponenttest.h
+    src/shipcontroller.h
+    src/shipcontroller.cpp
     src/io/input.h
     src/io/input.cpp
     src/io/keys.h

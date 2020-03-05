@@ -19,10 +19,12 @@ public:
     clear();
     CLASS_DESTRUCTOR_END()
 
+    void setup();
+
     graphics::Shader loadShader(const char* vShaderFile, const char* fShaderFile, const std::string& shaderName);
     graphics::Shader getShader(const std::string& shaderName);
 
-    graphics::Texture2D loadTexture(const char* textureFile, const std::string& texName);
+    void loadTexture(const char* textureFile, const std::string& texName);
     graphics::Texture2D getTexture(const std::string& texName);
 
     void clear();

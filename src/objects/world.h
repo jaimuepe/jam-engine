@@ -1,13 +1,15 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-#include "string"
+#include <string>
+
+#include <vector>
 
 #include "game.h"
 
 #include "objects/entity.h"
 
-#include <vector>
+#include "utils/macros.h"
 
 class Game;
 class GameTime;
@@ -27,8 +29,7 @@ public:
 
     World() = default;
 
-    World(World const&) = delete;
-    void operator=(World const&) = delete;
+    CLASS_NON_COPYABLE(World)
 
     ~World();
 

@@ -26,6 +26,12 @@ void OrthoCamera::setSize(float size)
     }
 }
 
+glm::vec2 OrthoCamera::viewportToWorld(float x, float y, float) const
+{
+    glm::vec2 pos = owner.transform.getPosition();
+    return glm::vec2{pos.x + (x - 0.5f) * 2.0f * halfWidth, pos.y - 2.0f * (y - 0.5f) * halfHeight };
+}
+
 glm::mat4 OrthoCamera::getView() const
 {
     glm::mat4 view{1.0f};
