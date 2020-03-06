@@ -13,8 +13,13 @@ void ShipController::update(const GameTime& gameTime)
         float x = cos(rotation);
         float y = sin(rotation);
 
-        glm::vec2 movement{x * speed, y * speed};
-        owner.transform.translate(movement * deltaTime);
+        velocity = velocity + acceleration * deltaTime * glm::vec2{x, y};
+
+        float currentSpeed = glm::length(velocity);
+        if (currentSpeed > maxSpeed)
+        {
+            velocity = glm::normalize(velocity) * maxSpeed;
+        }
     }
 
     if (owner.getInput()->isKeyDownOrRepeat(KEY_A))
@@ -25,4 +30,6 @@ void ShipController::update(const GameTime& gameTime)
     {
         owner.transform.rotate(angularSpeed * deltaTime);
     }
+
+    owner.transform.translate(velocity * deltaTime);
 }
