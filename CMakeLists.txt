@@ -77,7 +77,7 @@ add_executable(
 if(MSVC)
     target_compile_options(${TARGET_NAME} PRIVATE /W4)
 else()
-    target_compile_options(${TARGET_NAME} PRIVATE -Winline  -Werror
+    target_compile_options(${TARGET_NAME} PRIVATE -Winline
            -pedantic-errors -Wall -Wextra -Wconversion -Wsign-conversion)
 endif()
 

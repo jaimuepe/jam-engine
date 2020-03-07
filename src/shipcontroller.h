@@ -33,7 +33,7 @@ private:
     float m_maxSpeed = 200.0f;
     glm::vec2 m_velocity{0.0f, 0.0f};
 
-    float m_acceleration = 120.0f;
+    float m_acceleration = 200.0f;
 
     float m_angularSpeed = 3.0f;
 };
