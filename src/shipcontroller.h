@@ -30,12 +30,12 @@ public:
 
 private:
 
-    float maxSpeed = 200.0f;
-    glm::vec2 velocity{0.0f, 0.0f};
+    float m_maxSpeed = 200.0f;
+    glm::vec2 m_velocity{0.0f, 0.0f};
 
-    float acceleration = 120.0f;
+    float m_acceleration = 120.0f;
 
-    float angularSpeed = 3.0f;
+    float m_angularSpeed = 3.0f;
 };
 
 #endif // INPUTCOMPONENTTEST_H

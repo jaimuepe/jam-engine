@@ -13,40 +13,36 @@ namespace graphics
 
 void SpriteRenderer::setup()
 {
-    shader = owner.getResourcePool()->getShader("default");
-
-#ifdef MY_DEBUG
-    debugShader = owner.getResourcePool()->getShader("spriteRendererDebug");
-#endif
+    m_shader = m_owner.getResourcePool()->getShader("default");
 
     // OpenGL 4.5 / ARB_direct_state_access
 
     // ---- VBO ----
 
-    glCreateBuffers(1, &vbo);
-    glNamedBufferStorage(vbo, sizeof(vertices), vertices, GL_DYNAMIC_STORAGE_BIT);
+    glCreateBuffers(1, &m_vbo);
+    glNamedBufferStorage(m_vbo, sizeof(m_vertices), m_vertices, GL_DYNAMIC_STORAGE_BIT);
 
     // ---- VAO & linking ---
 
-    glCreateVertexArrays(1, &vao);
+    glCreateVertexArrays(1, &m_vao);
 
     // position + texcoords
-    glEnableVertexArrayAttrib(vao, 0);
-    glVertexArrayAttribFormat(vao, 0, 4, GL_FLOAT, GL_FALSE, 0);
-    glVertexArrayVertexBuffer(vao, 0, vbo, 0, 4 * sizeof(float));
+    glEnableVertexArrayAttrib(m_vao, 0);
+    glVertexArrayAttribFormat(m_vao, 0, 4, GL_FLOAT, GL_FALSE, 0);
+    glVertexArrayVertexBuffer(m_vao, 0, m_vbo, 0, 4 * sizeof(float));
 
 }
 
 void SpriteRenderer::render(const graphics::Context& context)
 {
-    glm::vec2 position = owner.transform.getPosition();
-    float rotation = owner.transform.getRotation();
-    glm::vec2 size = repeat ? glm::vec2{1.0f} : owner.transform.getScale();
+    glm::vec2 position = m_owner.transform.getPosition();
+    float rotation = m_owner.transform.getRotation();
+    glm::vec2 size = m_repeat ? glm::vec2{1.0f} : m_owner.transform.getScale();
 
-    if (texture.ID > 0)
+    if (m_texture.isValid())
     {
-        size.x *= static_cast<float>(texture.getWidth());
-        size.y *= static_cast<float>(texture.getHeight());
+        size.x *= static_cast<float>(m_texture.getWidth());
+        size.y *= static_cast<float>(m_texture.getHeight());
     }
 
     float halfWidth = size.x * 0.5f;
@@ -61,22 +57,24 @@ void SpriteRenderer::render(const graphics::Context& context)
 
     model = glm::scale(model, glm::vec3(size, 1.0f));
 
-    shader.use();
+    m_shader.use();
 
-    shader.setMat4("model", model);
-    shader.setMat4("view", context.view);
-    shader.setMat4("projection", context.projection);
-    shader.setVec3("tint", tint);
+    m_shader.setMat4("model", model);
+    m_shader.setMat4("view", context.view);
+    m_shader.setMat4("projection", context.projection);
+    m_shader.setVec3("tint", m_tint);
 
-    if (texture.ID > 0)
+    if (m_texture.isValid())
     {
-        texture.bind();
+        m_texture.bind();
     }
 
-    glBindVertexArray(vao);
+    glBindVertexArray(m_vao);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 #ifdef MY_DEBUG
+
+    static graphics::Shader debugShader = owner.getResourcePool()->getShader("spriteRendererDebug");
 
     debugShader.use();
     debugShader.setMat4("model", model);
@@ -98,49 +96,49 @@ void SpriteRenderer::render(const graphics::Context& context)
 
 void SpriteRenderer::setShader(const std::string& texName)
 {
-    this->shader = owner.getResourcePool()->getShader(texName);
+    m_shader = m_owner.getResourcePool()->getShader(texName);
 }
 
 void SpriteRenderer::setShader(const Shader& shader)
 {
-    this->shader = shader;
+    m_shader = shader;
 }
 
 void SpriteRenderer::setTexture(const std::string& texName)
 {
-    this->texture = owner.getResourcePool()->getTexture(texName);
+    m_texture = m_owner.getResourcePool()->getTexture(texName);
 }
 
 void SpriteRenderer::setTexture(const Texture2D& texture)
 {
-    this->texture = texture;
+    m_texture = texture;
 }
 
 void SpriteRenderer::setTint(glm::vec3 tint)
 {
-    this->tint = tint;
+    m_tint = tint;
 }
 
 
 void SpriteRenderer::setRepeat(bool repeat)
 {
-    if (this->repeat != repeat)
+    if (m_repeat != repeat)
     {
-        this->repeat = repeat;
+        m_repeat = repeat;
 
-        float factorX = repeat ? owner.transform.getScale().x : 1.0f;
-        float factorY = repeat ? owner.transform.getScale().y : 1.0f;
+        float factorX = repeat ? m_owner.transform.getScale().x : 1.0f;
+        float factorY = repeat ? m_owner.transform.getScale().y : 1.0f;
 
-        vertices[5] = factorY;
-        vertices[7] = factorY;
-        vertices[8] = factorX;
-        vertices[10] = factorX;
-        vertices[12] = factorX;
-        vertices[13] = factorY;
-        vertices[14] = factorX;
-        vertices[15] = factorY;
+        m_vertices[5] = factorY;
+        m_vertices[7] = factorY;
+        m_vertices[8] = factorX;
+        m_vertices[10] = factorX;
+        m_vertices[12] = factorX;
+        m_vertices[13] = factorY;
+        m_vertices[14] = factorX;
+        m_vertices[15] = factorY;
 
-        glNamedBufferSubData(vbo, 0, sizeof(vertices), vertices);
+        glNamedBufferSubData(m_vbo, 0, sizeof(m_vertices), m_vertices);
     }
 }
 

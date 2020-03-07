@@ -7,29 +7,29 @@ void ShipController::update(const GameTime& gameTime)
     float deltaTime = gameTime.getDeltaTime();
 
 
-    if (owner.getInput()->isKeyDownOrRepeat(KEY_W))
+    if (m_owner.getInput()->isKeyDownOrRepeat(KEY_W))
     {
-        float rotation = owner.transform.getRotation() - constants::math::halfPi;
+        float rotation = m_owner.transform.getRotation() - constants::math::halfPi;
         float x = cos(rotation);
         float y = sin(rotation);
 
-        velocity = velocity + acceleration * deltaTime * glm::vec2{x, y};
+        m_velocity = m_velocity + m_acceleration * deltaTime * glm::vec2{x, y};
 
-        float currentSpeed = glm::length(velocity);
-        if (currentSpeed > maxSpeed)
+        float currentSpeed = glm::length(m_velocity);
+        if (currentSpeed > m_maxSpeed)
         {
-            velocity = glm::normalize(velocity) * maxSpeed;
+            m_velocity = glm::normalize(m_velocity) * m_maxSpeed;
         }
     }
 
-    if (owner.getInput()->isKeyDownOrRepeat(KEY_A))
+    if (m_owner.getInput()->isKeyDownOrRepeat(KEY_A))
     {
-        owner.transform.rotate(-angularSpeed * deltaTime);
+        m_owner.transform.rotate(-m_angularSpeed * deltaTime);
     }
-    else if (owner.getInput()->isKeyDownOrRepeat(KEY_D))
+    else if (m_owner.getInput()->isKeyDownOrRepeat(KEY_D))
     {
-        owner.transform.rotate(angularSpeed * deltaTime);
+        m_owner.transform.rotate(m_angularSpeed * deltaTime);
     }
 
-    owner.transform.translate(velocity * deltaTime);
+    m_owner.transform.translate(m_velocity * deltaTime);
 }

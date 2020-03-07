@@ -9,7 +9,10 @@ class Texture2D
 
 public:
 
-    unsigned int ID;
+    unsigned int getID() const
+    {
+        return m_ID;
+    }
 
     void generate(unsigned char* data, int width, int height, int nChannels);
 
@@ -17,17 +20,25 @@ public:
 
     int getWidth() const
     {
-        return width;
+        return m_width;
     }
 
     int getHeight() const
     {
-        return height;
+        return m_height;
+    }
+
+    bool isValid() const
+    {
+        return m_ID > 0;
     }
 
 private:
-    int width;
-    int height;
+
+    unsigned int m_ID;
+
+    int m_width;
+    int m_height;
 };
 
 } // namespace graphics

@@ -15,7 +15,7 @@ namespace objects
 
 World::~World()
 {
-    for (auto entity : entities)
+    for (auto entity : m_entities)
     {
         delete entity;
     }
@@ -23,39 +23,39 @@ World::~World()
 
 void World::setup(Game* game)
 {
-    this->game = game;
+    m_game = game;
 }
 
 Entity* World::create(const std::string &name)
 {
     ConstructorContext context;
     context.world = this;
-    context.input = game->getInput();
-    context.resourcePool = game->getResourcePool();
+    context.input = m_game->getInput();
+    context.resourcePool = m_game->getResourcePool();
 
     context.name = name;
 
     Entity* instance = new Entity(context);
     instance->setup();
 
-    entities.push_back(instance);
+    m_entities.push_back(instance);
 
     return instance;
 }
 
 graphics::Camera* World::getMainCamera() const
 {
-    return this->mainCamera;
+    return m_mainCamera;
 }
 
 void World::setMainCamera(graphics::Camera *mainCamera)
 {
-    this->mainCamera = mainCamera;
+    m_mainCamera = mainCamera;
 }
 
 std::vector<objects::Entity*> World::getEntities() const
 {
-    return this->entities;
+    return this->m_entities;
 }
 
 } // namespace objects

@@ -11,6 +11,10 @@
 
 namespace graphics
 {
+    unsigned int Shader::getID() const
+    {
+        return m_ID;
+    }
 
     void Shader::compile(const char* vCode, const char* fCode)
     {
@@ -54,17 +58,17 @@ namespace graphics
 
         // program
 
-        ID = glCreateProgram();
-        glAttachShader(ID, vertexId);
-        glAttachShader(ID, fragId);
-        glLinkProgram(ID);
+        m_ID = glCreateProgram();
+        glAttachShader(m_ID, vertexId);
+        glAttachShader(m_ID, fragId);
+        glLinkProgram(m_ID);
 
         // print errors if any
 
-        glGetProgramiv(ID, GL_LINK_STATUS, &success);
+        glGetProgramiv(m_ID, GL_LINK_STATUS, &success);
         if(!success)
         {
-            glGetProgramInfoLog(ID, 512, NULL, infoLog);
+            glGetProgramInfoLog(m_ID, 512, NULL, infoLog);
             logging::error("SHADER::PROGRAM::LINKING_FAILED");
             logging::error(infoLog);
         }
@@ -77,26 +81,26 @@ namespace graphics
 
     void Shader::use() const
     {
-        glUseProgram(ID);
+        glUseProgram(m_ID);
     }
 
     void Shader::setFloat(const char* name, float value) const
     {
-        glUniform1f(glGetUniformLocation(ID, name), value);
+        glUniform1f(glGetUniformLocation(m_ID, name), value);
     }
 
      void Shader::setInt(const char* name, int value) const
      {
-        glUniform1i(glGetUniformLocation(ID, name), value);
+        glUniform1i(glGetUniformLocation(m_ID, name), value);
      }
 
      void Shader::setVec3(const char* name, const glm::vec3& value) const
      {
-         glUniform3f(glGetUniformLocation(ID, name), value.x, value.y, value.z);
+         glUniform3f(glGetUniformLocation(m_ID, name), value.x, value.y, value.z);
      }
 
     void Shader::setMat4(const char* name, const glm::mat4& value) const
     {
-        glUniformMatrix4fv(glGetUniformLocation(ID, name), 1, GL_FALSE, glm::value_ptr(value));
+        glUniformMatrix4fv(glGetUniformLocation(m_ID, name), 1, GL_FALSE, glm::value_ptr(value));
     }
 }

@@ -27,15 +27,15 @@
 
 Game::Game()
 {
-    window = new Window(1024, 768);
-    input = new io::Input();
-    world = new objects::World();
-    resourcePool = new ResourcePool();
+    m_window = new Window(1024, 768);
+    m_input = new io::Input();
+    m_world = new objects::World();
+    m_resourcePool = new ResourcePool();
 
-    world->setup(this);
-    input->setup(this);
-    window->setup(this);
-    resourcePool->setup();
+    m_world->setup(this);
+    m_input->setup(this);
+    m_window->setup(this);
+    m_resourcePool->setup();
 
     glEnable(GL_CULL_FACE);
 
@@ -50,25 +50,25 @@ Game::Game()
 
     // render loop
     // -----------
-    while (!window->shouldClose())
+    while (!m_window->shouldClose())
     {
-        gameTime.beginFrame();
+        m_gameTime.beginFrame();
 
         update();
         render();
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
-        glfwSwapBuffers(window->getGLFWWindow());
+        glfwSwapBuffers(m_window->getGLFWWindow());
         glfwPollEvents();
     }
 }
 
 void Game::loadResources()
 {
-    resourcePool->loadShader("defaultUnlitShader.vs", "defaultUnlitShader.fs", "default");
-    resourcePool->loadTexture("backgrounds/purple.png", "bg1");
-    resourcePool->loadTexture("playerShip1_red.png", "ship1");
+    m_resourcePool->loadShader("defaultUnlitShader.vs", "defaultUnlitShader.fs", "default");
+    m_resourcePool->loadTexture("backgrounds/purple.png", "bg1");
+    m_resourcePool->loadTexture("playerShip1_red.png", "ship1");
 
 #ifdef MY_DEBUG
     resourcePool->loadShader("spriteRendererBoundingBox.vs", "spriteRendererBoundingBox.fs", "spriteRendererDebug");
@@ -79,21 +79,21 @@ void Game::loadResources()
 void Game::start()
 {
 
-    objects::Entity* camEntity = world->create("mainCam");
+    objects::Entity* camEntity = m_world->create("mainCam");
     graphics::OrthoCamera* camera = camEntity->add<graphics::OrthoCamera>();
 
-    world->setMainCamera(camera);
+    m_world->setMainCamera(camera);
 
-    objects::Entity* bgEntity = world->create("bg");
+    objects::Entity* bgEntity = m_world->create("bg");
     bgEntity->transform.setScale(glm::vec2{8.0f, 5.0f});
-    bgEntity->transform.setPosition(world->getMainCamera()->viewportToWorld(0.0f, 1.0f));
+    bgEntity->transform.setPosition(m_world->getMainCamera()->viewportToWorld(0.0f, 1.0f));
 
     graphics::SpriteRenderer* sr = bgEntity->add<graphics::SpriteRenderer>();
     sr->setTexture("bg1");
     sr->setRepeat(true);
 
-    objects::Entity* playerEntity = world->create("player1");
-    playerEntity->transform.setPosition(world->getMainCamera()->viewportToWorld(0.5f, 0.5f));
+    objects::Entity* playerEntity = m_world->create("player1");
+    playerEntity->transform.setPosition(m_world->getMainCamera()->viewportToWorld(0.5f, 0.5f));
 
     graphics::SpriteRenderer* srPlayer = playerEntity->add<graphics::SpriteRenderer>();
     srPlayer->setTexture("ship1");
@@ -103,7 +103,7 @@ void Game::start()
 
 Game::~Game()
 {
-    delete world;
+    delete m_world;
 }
 
 void Game::update()
@@ -111,18 +111,18 @@ void Game::update()
     // TODO change to callbacks instead of polling?
     processInput();
 
-    for (auto& entity : world->getEntities())
+    for (auto& entity : m_world->getEntities())
     {
         if (entity->isUpdateable())
         {
-            entity->update(gameTime);
+            entity->update(m_gameTime);
         }
     }
 }
 
 void Game::render()
 {
-    graphics::Camera* cam = world->getMainCamera();
+    graphics::Camera* cam = m_world->getMainCamera();
 
     if (cam == nullptr)
     {
@@ -151,7 +151,7 @@ void Game::render()
         gContext.view = cam->getView();
         gContext.projection = cam->getProjection();
 
-        for (auto& entity : world->getEntities())
+        for (auto& entity : m_world->getEntities())
         {
             if (entity->isRenderable())
             {
@@ -163,24 +163,24 @@ void Game::render()
 
 void Game::processInput()
 {
-    if (input->isKeyDown(KEY_ESCAPE))
+    if (m_input->isKeyDown(KEY_ESCAPE))
     {
-        glfwSetWindowShouldClose(window->getGLFWWindow(), true);
+        glfwSetWindowShouldClose(m_window->getGLFWWindow(), true);
     }
 
-    if (input->isKeyDown(KEY_F))
+    if (m_input->isKeyDown(KEY_F))
     {
-        GLFWmonitor* monitor = glfwGetWindowMonitor(window->getGLFWWindow());
+        GLFWmonitor* monitor = glfwGetWindowMonitor(m_window->getGLFWWindow());
 
         if (monitor == NULL)
         {
             monitor = glfwGetPrimaryMonitor();
             const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-            glfwSetWindowMonitor(window->getGLFWWindow(), monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+            glfwSetWindowMonitor(m_window->getGLFWWindow(), monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
         }
         else
         {
-            glfwSetWindowMonitor(window->getGLFWWindow(), NULL, 0, 0, 800, 600, 0);
+            glfwSetWindowMonitor(m_window->getGLFWWindow(), NULL, 0, 0, 800, 600, 0);
         }
     }
 

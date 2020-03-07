@@ -27,7 +27,7 @@ class GameTime;
 namespace objects
 {
 
-class ConstructorContext;
+struct ConstructorContext;
 class World;
 
 class Entity
@@ -53,15 +53,15 @@ public:
     {
         std::string prettyName = boost::typeindex::type_id<T>().pretty_name();
 
-        auto it = components.find(prettyName);
-        if (it == components.end())
+        auto it = m_components.find(prettyName);
+        if (it == m_components.end())
         {
             return this->add<T>(prettyName);
         }
 
         int index = 0;
 
-        while ((it = components.find(prettyName + std::to_string(index))) != components.end())
+        while ((it = m_components.find(prettyName + std::to_string(index))) != m_components.end())
         {
             index++;
         }
@@ -78,18 +78,18 @@ public:
         T* component = new T(*this);
         component->setup();
 
-        components[name] = component;
+        m_components[name] = component;
 
-        logging::debug("Added component " + name + " to entity " + this->name);
+        logging::debug("Added component " + name + " to entity " + this->m_name);
 
-        if (!renderable && component->isRenderable())
+        if (!m_renderable && component->isRenderable())
         {
-            renderable = true;
+            m_renderable = true;
         }
 
-        if (!updateable && component->isUpdateable())
+        if (!m_updateable && component->isUpdateable())
         {
-            updateable = true;
+            m_updateable = true;
         }
 
         return component;
@@ -101,19 +101,19 @@ public:
         // Compile-time sanity check
         static_assert(std::is_base_of<Component, T>::value, "Class is not a Component!");
 
-        return static_cast<T>(*components[name]);
+        return static_cast<T>(*m_components[name]);
     }
 
     friend class World;
 
     bool isRenderable()
     {
-        return renderable;
+        return m_renderable;
     }
 
     bool isUpdateable()
     {
-        return updateable;
+        return m_updateable;
     }
 
     World* getWorld() const;
@@ -122,17 +122,16 @@ public:
 
 private:
 
-    bool renderable = false;
-    bool updateable = false;
+    bool m_renderable = false;
+    bool m_updateable = false;
 
-    World* world;
-    io::Input* input;
-    ResourcePool* resourcePool;
+    World* m_world;
+    io::Input* m_input;
+    ResourcePool* m_resourcePool;
 
-    std::string name;
+    std::string m_name;
 
-    std::map<std::string, Component*> components;
-
+    std::map<std::string, Component*> m_components;
 };
 
 } // namespace objects

@@ -26,17 +26,18 @@ void ResourcePool::setup()
 
 void ResourcePool::clear()
 {
-    for(std::map<std::string, graphics::Shader>::iterator itr = shaders.begin(); itr != shaders.end(); itr++)
+    for(std::map<std::string, graphics::Shader>::iterator itr = m_shaders.begin(); itr != m_shaders.end(); itr++)
     {
-         glDeleteProgram(itr->second.ID);
+         glDeleteProgram(itr->second.getID());
     }
-    shaders.clear();
+    m_shaders.clear();
 
-    for(std::map<std::string, graphics::Texture2D>::iterator itr = textures.begin(); itr != textures.end(); itr++)
+    for(std::map<std::string, graphics::Texture2D>::iterator itr = m_textures.begin(); itr != m_textures.end(); itr++)
     {
-        glDeleteTextures(1, &itr->second.ID);
+        unsigned int ID = itr->second.getID();
+        glDeleteTextures(1, &ID);
     }
-    textures.clear();
+    m_textures.clear();
 }
 
 graphics::Shader ResourcePool::loadShader(const char* vShaderFile, const char* fShaderFile, const std::string& shaderName)
@@ -69,7 +70,7 @@ graphics::Shader ResourcePool::loadShader(const char* vShaderFile, const char* f
         vertexCode = vShaderStream.str();
         fragmentCode = fShaderStream.str();
     }
-    catch (const std::exception& e)
+    catch (const std::exception&)
     {
         std::cout << "ERROR::SHADER: Failed to read shader files" << std::endl;
     }
@@ -77,14 +78,14 @@ graphics::Shader ResourcePool::loadShader(const char* vShaderFile, const char* f
     graphics::Shader shader;
     shader.compile(vertexCode.c_str(), fragmentCode.c_str());
 
-    shaders[shaderName] = shader;
+    m_shaders[shaderName] = shader;
 
     return shader;
 }
 
 graphics::Shader ResourcePool::getShader(const std::string& shaderName)
 {
-    return shaders[shaderName];
+    return m_shaders[shaderName];
 }
 
 void ResourcePool::loadTexture(const char* textureFile, const std::string& texName)
@@ -104,7 +105,7 @@ void ResourcePool::loadTexture(const char* textureFile, const std::string& texNa
         graphics::Texture2D tex;
         tex.generate(data, width, height, nChannels);
 
-        textures[texName] = tex;
+        m_textures[texName] = tex;
 
         stbi_image_free(data);
     }
@@ -116,8 +117,8 @@ void ResourcePool::loadTexture(const char* textureFile, const std::string& texNa
 
 graphics::Texture2D ResourcePool::getTexture(const std::string& texName)
 {
-    auto it = textures.find(texName);
-    if (it == textures.end())
+    auto it = m_textures.find(texName);
+    if (it == m_textures.end())
     {
         logging::warn("Texture " + texName + " not found!");
         return getTexture("__nullTexture");

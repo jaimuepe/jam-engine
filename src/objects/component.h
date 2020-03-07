@@ -19,7 +19,7 @@ class Component
 
 public:
 
-    Component(objects::Entity& owner);
+    Component(Entity& m_owner);
     virtual ~Component();
 
     CLASS_NON_COPYABLE(Component)
@@ -32,20 +32,20 @@ public:
 
     bool isRenderable()
     {
-        return renderable;
+        return m_renderable;
     }
 
     bool isUpdateable()
     {
-        return updateable;
+        return m_updateable;
     }
 
 protected:
 
-    objects::Entity& owner;
+    Entity& m_owner;
 
-    bool renderable = false;
-    bool updateable = false;
+    bool m_renderable = false;
+    bool m_updateable = false;
 };
 
 } // namespace objects

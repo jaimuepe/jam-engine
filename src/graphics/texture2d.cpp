@@ -13,28 +13,28 @@ namespace graphics
 
     void Texture2D::generate(unsigned char* data, int width, int height, int nChannels)
     {
-        glCreateTextures(GL_TEXTURE_2D, 1, &ID);
+        glCreateTextures(GL_TEXTURE_2D, 1, &m_ID);
 
         GLenum format = nChannels == 3 ? GL_RGB : GL_RGBA;
         GLenum internalFormat = nChannels == 3 ? GL_RGB8 : GL_RGBA8;
 
-        glTextureStorage2D(ID, 1, internalFormat, width, height);
+        glTextureStorage2D(m_ID, 1, internalFormat, width, height);
 
-        glTextureSubImage2D(ID, 0, 0, 0, width, height,  format, GL_UNSIGNED_BYTE, data);
+        glTextureSubImage2D(m_ID, 0, 0, 0, width, height,  format, GL_UNSIGNED_BYTE, data);
 
-        glTextureParameteri(ID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTextureParameteri(ID, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTextureParameteri(ID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTextureParameteri(ID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTextureParameteri(m_ID, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTextureParameteri(m_ID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTextureParameteri(m_ID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTextureParameteri(m_ID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         // glGenerateTextureMipmap(ID);
 
-        this->width = width;
-        this->height = height;
+        m_width = width;
+        m_height = height;
     }
 
     void Texture2D::bind() const
     {
-        glBindTexture(GL_TEXTURE_2D, this->ID);
+        glBindTexture(GL_TEXTURE_2D, m_ID);
     }
 }

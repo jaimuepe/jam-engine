@@ -6,7 +6,7 @@
 namespace objects
 {
 
-Component::Component(objects::Entity& owner) : owner(owner) {}
+Component::Component(objects::Entity& m_owner) : m_owner(m_owner) {}
 
 Component::~Component() {}
 

@@ -15,10 +15,9 @@ public:
 
 private:
 
-    float deltaTime;
-    float currentFrameTime;
-    float lastFrameTime;
-
+    float m_deltaTime;
+    float m_currentFrameTime;
+    float m_lastFrameTime;
 };
 
 #endif // GAMETIME_H

@@ -45,15 +45,15 @@ Window::Window(int width, int height)
 
     // glfw window creation
     // --------------------
-    glfwWindow = glfwCreateWindow(width, height, "game", NULL, NULL);
-    if (glfwWindow == NULL)
+    m_glfwWindow = glfwCreateWindow(width, height, "game", NULL, NULL);
+    if (m_glfwWindow == NULL)
     {
         logging::fatal("Failed to create GLFW window");
         glfwTerminate();
         return;
     }
 
-    glfwMakeContextCurrent(glfwWindow);
+    glfwMakeContextCurrent(m_glfwWindow);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -66,28 +66,28 @@ Window::Window(int width, int height)
 
 void Window::setup(Game* game)
 {
-    glfwSetWindowUserPointer(glfwWindow, game);
+    glfwSetWindowUserPointer(m_glfwWindow, game);
 
-    glfwSetFramebufferSizeCallback(glfwWindow, framebufferSizeCallback);
+    glfwSetFramebufferSizeCallback(m_glfwWindow, framebufferSizeCallback);
 
     int width;
     int height;
     getSize(width, height);
 
-    framebufferSizeCallback(glfwWindow, width, height);
+    framebufferSizeCallback(m_glfwWindow, width, height);
 }
 
 bool Window::shouldClose() const
 {
-    return glfwWindowShouldClose(glfwWindow);
+    return glfwWindowShouldClose(m_glfwWindow);
 }
 
 void Window::getSize(int& width, int& height) const
 {
-    glfwGetFramebufferSize(glfwWindow, &width, &height);
+    glfwGetFramebufferSize(m_glfwWindow, &width, &height);
 }
 
 GLFWwindow* Window::getGLFWWindow() const
 {
-    return glfwWindow;
+    return m_glfwWindow;
 }

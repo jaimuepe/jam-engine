@@ -41,14 +41,12 @@ public:
 
 private:
 
-    // TODO default shader?
+    GLuint m_vao;
+    GLuint m_vbo;
 
-    GLuint vao;
-    GLuint vbo;
+    Shader m_shader;
 
-    Shader shader;
-
-    GLfloat vertices[16] = {
+    GLfloat m_vertices[16] = {
         // Pos      // Tex
         0.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f, 1.0f,
@@ -56,15 +54,11 @@ private:
         1.0f, 1.0f, 1.0f, 1.0f
     };
 
-#ifdef MY_DEBUG
-    Shader debugShader;
-#endif
+    bool m_repeat;
 
-    bool repeat;
+    Texture2D m_texture;
 
-    Texture2D texture;
-
-    glm::vec3 tint{1.0};
+    glm::vec3 m_tint{1.0};
 };
 
 } // namespace graphics

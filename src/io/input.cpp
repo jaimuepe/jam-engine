@@ -24,12 +24,12 @@ void Input::setup(Game* game)
 
 bool Input::isKeyDown(int key) const
 {
-    return keyState[key] == GLFW_PRESS;
+    return m_keyState[key] == GLFW_PRESS;
 }
 
 bool Input::isKeyRepeat(int key) const
 {
-    return keyState[key] == GLFW_REPEAT;
+    return m_keyState[key] == GLFW_REPEAT;
 }
 
 bool Input::isKeyDownOrRepeat(int key) const
@@ -39,18 +39,18 @@ bool Input::isKeyDownOrRepeat(int key) const
 
 bool Input::isKeyUp(int key) const
 {
-    return keyState[key] == GLFW_RELEASE;
+    return m_keyState[key] == GLFW_RELEASE;
 }
 
 void Input::addCursorPosCallback(const cursorPosCallback& callback)
 {
-    mouseMovedCallbacks.push_back(callback);
+    m_mouseMovedCallbacks.push_back(callback);
 }
 
 void Input::addScrollCallback(const scrollCallback &callback)
 {
 
-    scrollCallbacks.push_back(callback);
+    m_scrollCallbacks.push_back(callback);
 }
 
 void Input::glfwKeyCallback(GLFWwindow* window, int key, int, int action, int)
@@ -61,8 +61,7 @@ void Input::glfwKeyCallback(GLFWwindow* window, int key, int, int action, int)
 
     if (input)
     {
-        logging::debug(action);
-        input->keyState[key] = action;
+        input->m_keyState[key] = action;
     }
 }
 
@@ -78,7 +77,7 @@ void Input::glfwCursorPosCallback(GLFWwindow* window, double posX, double posY)
         float x = (float) posX;
         float y = (float) posY;
 
-        std::vector<cursorPosCallback> callbacks = input->mouseMovedCallbacks;
+        std::vector<cursorPosCallback> callbacks = input->m_mouseMovedCallbacks;
 
         for (size_t i = 0; i < callbacks.size(); i++)
         {
@@ -97,7 +96,7 @@ void Input::glfwScrollCallback(GLFWwindow* window, double xOffset, double)
         float x = (float) xOffset;
         float y = (float) xOffset;
 
-        std::vector<cursorPosCallback> callbacks = input->scrollCallbacks;
+        std::vector<cursorPosCallback> callbacks = input->m_scrollCallbacks;
 
         for (size_t i = 0; i < callbacks.size(); i++)
         {

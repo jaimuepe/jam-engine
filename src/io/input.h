@@ -4,9 +4,10 @@
 #include <vector>
 #include <functional>
 
-#include "io/keys.h"
-
 #include "GLFW/glfw3.h"
+
+#include "io/keys.h"
+#include "utils/macros.h"
 
 class Game;
 class Window;
@@ -24,6 +25,8 @@ public:
 
     Input() = default;
 
+    CLASS_NON_COPYABLE(Input)
+
     void setup(Game* game);
 
     void addCursorPosCallback(const cursorPosCallback& callback);
@@ -40,13 +43,10 @@ public:
 
 private:
 
-    int keyState[KEY_LAST]{};
+    int m_keyState[KEY_LAST]{};
 
-    std::vector<cursorPosCallback> mouseMovedCallbacks;
-    std::vector<scrollCallback> scrollCallbacks;
-
-    Input(const Input&) = default;
-    Input& operator=(const Input&) = default;
+    std::vector<cursorPosCallback> m_mouseMovedCallbacks;
+    std::vector<scrollCallback> m_scrollCallbacks;
 
     static void glfwScrollCallback(GLFWwindow*, double xOffset, double yOffset);
 

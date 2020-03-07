@@ -44,10 +44,10 @@ public:
 
 private:
 
-    Game* game;
-    graphics::Camera* mainCamera;
+    Game* m_game;
+    graphics::Camera* m_mainCamera;
 
-    std::vector<objects::Entity*> entities;
+    std::vector<objects::Entity*> m_entities;
 };
 
 } // namespace objects

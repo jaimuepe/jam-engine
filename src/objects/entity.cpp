@@ -17,20 +17,20 @@ namespace objects
 {
 
 Entity::Entity(const ConstructorContext& context):
-    world(context.world), input(context.input), resourcePool(context.resourcePool), name(context.name)
+    m_world(context.world), m_input(context.input), m_resourcePool(context.resourcePool), m_name(context.name)
 {
     transform.reset(context.position, context.rotation, context.scale);
 }
 
 Entity::~Entity()
 {
-    logging::debug("Destroying entity " + name);
+    logging::debug("Destroying entity " + m_name);
     destroy();
 }
 
 void Entity::update(const GameTime& gameTime)
 {
-    for (auto &comp : components)
+    for (auto &comp : m_components)
     {
         if (comp.second->isUpdateable())
         {
@@ -41,7 +41,7 @@ void Entity::update(const GameTime& gameTime)
 
 void Entity::render(const graphics::Context& context)
 {
-    for (auto &comp : components)
+    for (auto &comp : m_components)
     {
         if (comp.second->isRenderable())
         {
@@ -52,26 +52,26 @@ void Entity::render(const graphics::Context& context)
 
 void Entity::destroy()
 {
-    for(std::map<std::string, Component*>::iterator itr = components.begin(); itr != components.end(); itr++)
+    for(std::map<std::string, Component*>::iterator itr = m_components.begin(); itr != m_components.end(); itr++)
     {
         delete (itr->second);
     }
-    components.clear();
+    m_components.clear();
 }
 
 World* Entity::getWorld() const
 {
-    return world;
+    return m_world;
 }
 
 io::Input* Entity::getInput() const
 {
-    return input;
+    return m_input;
 }
 
 ResourcePool* Entity::getResourcePool() const
 {
-    return resourcePool;
+    return m_resourcePool;
 }
 
 } // namespace objects

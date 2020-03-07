@@ -26,7 +26,7 @@ public:
 
 private:
 
-    GLFWwindow* glfwWindow;
+    GLFWwindow* m_glfwWindow;
 };
 
 #endif // WINDOW_H

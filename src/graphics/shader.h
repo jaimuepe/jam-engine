@@ -13,7 +13,7 @@ class Shader
 
 public:
 
-    unsigned int ID;
+    unsigned int getID() const;
 
     void compile(const char* vCode, const char* fCode);
 
@@ -28,6 +28,10 @@ public:
     void setVec3(const char* name, const glm::vec3& value) const;
 
     void setMat4(const char* name, const glm::mat4& value) const;
+
+private:
+    unsigned int m_ID;
+
 };
 
 } // namespace graphics

@@ -9,39 +9,43 @@
 namespace graphics
 {
 
-OrthoCamera::OrthoCamera(objects::Entity& owner): Camera(owner), size(1.0f)
+OrthoCamera::OrthoCamera(objects::Entity& m_owner): Camera(m_owner), m_size(1.0f)
 {
-    halfWidth = 0.5f * size * internalResolutionX;
-    halfHeight = 0.5f * size * internalResolutionY;
+    m_halfWidth = 0.5f * m_size * internalResolutionX;
+    m_halfHeight = 0.5f * m_size * internalResolutionY;
 }
 
 void OrthoCamera::setSize(float size)
 {
     if (size > 0.0f)
     {
-        this->size = size;
+        m_size = size;
 
-        halfWidth = 0.5f * size * internalResolutionX;
-        halfHeight = 0.5f * size * internalResolutionY;
+        m_halfWidth = 0.5f * size * internalResolutionX;
+        m_halfHeight = 0.5f * size * internalResolutionY;
     }
 }
 
 glm::vec2 OrthoCamera::viewportToWorld(float x, float y, float) const
 {
-    glm::vec2 pos = owner.transform.getPosition();
-    return glm::vec2{pos.x + (x - 0.5f) * 2.0f * halfWidth, pos.y - 2.0f * (y - 0.5f) * halfHeight };
+    glm::vec2 pos = m_owner.transform.getPosition();
+    return glm::vec2
+    {
+        pos.x + 2.0f * (x - 0.5f) * m_halfWidth, 
+        pos.y - 2.0f * (y - 0.5f) * m_halfHeight 
+    };
 }
 
 glm::mat4 OrthoCamera::getView() const
 {
     glm::mat4 view{1.0f};
-    view = glm::translate(view, glm::vec3{owner.transform.getPosition(), 0.0f});
+    view = glm::translate(view, glm::vec3{m_owner.transform.getPosition(), 0.0f});
     return view;
 }
 
 glm::mat4 OrthoCamera::getProjection() const
 {
-    return glm::ortho(-halfWidth, halfWidth, halfHeight, -halfHeight, -1.0f, 1.0f);
+    return glm::ortho(-m_halfWidth, m_halfWidth, m_halfHeight, -m_halfHeight, -1.0f, 1.0f);
 }
 
 } // namespace objects

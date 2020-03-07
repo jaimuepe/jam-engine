@@ -4,11 +4,11 @@
 #define STR(s) #s
 
 #define __INTERNAL_COMPONENT_CONSTRUCTOR(TypeName, _renderable, _updateable) \
-    TypeName(objects::Entity& owner) \
-    : Component(owner) \
+    TypeName(objects::Entity& m_owner) \
+    : Component(m_owner) \
     { \
-        renderable = _renderable; \
-        updateable = _updateable; \
+        m_renderable = _renderable; \
+        m_updateable = _updateable; \
     }
 
 #define COMPONENT_CONSTRUCTOR(TypeName) __INTERNAL_COMPONENT_CONSTRUCTOR(TypeName, false, false)
@@ -36,11 +36,11 @@
     }
 
 #define CAMERA_CONSTRUCTOR(TypeName) \
-    TypeName(objects::Entity& owner) \
-    : Camera(owner) \
+    TypeName(objects::Entity& m_owner) \
+    : Camera(m_owner) \
     { \
-        updateable = false; \
-        renderable = false; \
+        m_updateable = false; \
+        m_renderable = false; \
     }
 
 #define CLASS_NON_COPYABLE(TypeName) \

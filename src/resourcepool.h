@@ -31,8 +31,8 @@ public:
 
 private:
 
-    std::map<std::string, graphics::Shader> shaders;
-    std::map<std::string, graphics::Texture2D> textures;
+    std::map<std::string, graphics::Shader> m_shaders;
+    std::map<std::string, graphics::Texture2D> m_textures;
 };
 
 #endif // RESOURCE_H

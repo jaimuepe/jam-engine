@@ -16,10 +16,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(X11 REQUIRED)
 find_package(Threads REQUIRED)
-find_package(OpenGL COMPONENTS OpenGL REQUIRED)
 find_package(Boost COMPONENTS filesystem REQUIRED)
 
-add_compile_definitions(MY_DEBUG)
+add_compile_definitions(MYs_DEBUG)
 
 include_directories(
     src
@@ -76,31 +75,34 @@ add_executable(
     ${SOURCE_FILES})
 
 if(MSVC)
-    target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
+    target_compile_options(${TARGET_NAME} PRIVATE /W4)
 else()
-    target_compile_options(${TARGET_NAME} PRIVATE -Winline  #[[ -Werror
-           -pedantic-errors -Wall -Wextra -Wconversion -Wsign-conversion ]] )
+    target_compile_options(${TARGET_NAME} PRIVATE -Winline  -Werror
+           -pedantic-errors -Wall -Wextra -Wconversion -Wsign-conversion)
 endif()
 
+message(STATUS "CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR}")
+
 if (EXISTS "${CMAKE_SOURCE_DIR}/resources")
-    if (UNIX)
-        add_custom_target(copy_res_directory ALL
-            COMMAND ${CMAKE_COMMAND} -E copy_directory
-                    "${CMAKE_SOURCE_DIR}/resources"
-                    "${CMAKE_BINARY_DIR}/resources"
-            COMMENT "Copy res directory to build tree"
-            VERBATIM)
-    endif()
+	add_custom_target(copy-resources ALL
+		COMMAND ${CMAKE_COMMAND} -E remove_directory
+			"$<TARGET_FILE_DIR:${PROJECT_NAME}>/resources"
+		COMMAND ${CMAKE_COMMAND} -E copy_directory
+			"${CMAKE_SOURCE_DIR}/resources"
+			"$<TARGET_FILE_DIR:${PROJECT_NAME}>/resources"
+		COMMENT "Copy res directory to build tree"
+		VERBATIM)
 endif()
 
 target_link_libraries(
     ${TARGET_NAME}
-    PRIVATE glad stb
-    glfw3
+    PRIVATE 
+	glad 
+	stb
+    glfw
     spdlog::spdlog
     ${CMAKE_DL_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
     ${X11_LIBRARIES}
-    ${OPENGL_LIBRARIES}
     ${Boost_FILESYSTEM_LIBRARY}
     ${Boost_TYPEINDEX_LIBRARY})

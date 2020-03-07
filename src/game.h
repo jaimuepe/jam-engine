@@ -31,28 +31,28 @@ public:
 
     Window* getWindow() const
     {
-        return window;
+        return m_window;
     }
 
     io::Input* getInput() const
     {
-        return input;
+        return m_input;
     }
 
     ResourcePool* getResourcePool()
     {
-        return resourcePool;
+        return m_resourcePool;
     }
 
 private:
 
-    GameTime gameTime;
+    GameTime m_gameTime;
 
-    Window* window;
-    ResourcePool* resourcePool;
+    Window* m_window;
+    ResourcePool* m_resourcePool;
 
-    io::Input* input;
-    objects::World* world;
+    io::Input* m_input;
+    objects::World* m_world;
 
     void processInput();
 };
