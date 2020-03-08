@@ -27,34 +27,40 @@ inline void setLevel(level::level_enum level)
     spdlog::set_level(static_cast<spdlog::level::level_enum>(level));
 }
 
+inline void setupLogger()
+{
+    spdlog::stdout_color_mt("console");
+    setLevel(level::debug);
+}
+
 template<typename T>
 inline void trace(const T &msg)
 {
-     spdlog::trace(msg);
+     spdlog::get("console")->trace(msg);
 }
 
 template<typename T>
 inline void debug(const T& msg)
 {
-    spdlog::debug(msg);
+    spdlog::get("console")->debug(msg);
 }
 
 template<typename T>
 inline void warn(const T& msg)
 {
-    spdlog::warn(msg);
+    spdlog::get("console")->warn(msg);
 }
 
 template<typename T>
 inline void error(const T& msg)
 {
-    spdlog::error(msg);
+    spdlog::get("console")->error(msg);
 }
 
 template<typename T>
 inline void fatal(const T& msg)
 {
-    spdlog::critical(msg);
+    spdlog::get("console")->critical(msg);
 }
 
 } // namespace logging

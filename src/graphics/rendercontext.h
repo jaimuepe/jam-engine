@@ -6,7 +6,7 @@
 namespace graphics
 {
 
-struct Context
+struct RenderContext
 {
 
 public:

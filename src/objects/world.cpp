@@ -43,6 +43,28 @@ Entity* World::create(const std::string &name)
     return instance;
 }
 
+void World::update(const GameTime& gameTime)
+{
+    for (auto& entity : m_entities)
+    {
+        if (entity->isUpdateable())
+        {
+            entity->update(gameTime);
+        }
+    }
+}
+
+void World::renderEntities(const graphics::RenderContext& context) const
+{
+    for (auto entity : m_entities)
+    {
+        if (entity->isRenderable())
+        {
+            entity->render(context);
+        }
+    }
+}
+
 graphics::Camera* World::getMainCamera() const
 {
     return m_mainCamera;
@@ -51,11 +73,6 @@ graphics::Camera* World::getMainCamera() const
 void World::setMainCamera(graphics::Camera *mainCamera)
 {
     m_mainCamera = mainCamera;
-}
-
-std::vector<objects::Entity*> World::getEntities() const
-{
-    return this->m_entities;
 }
 
 } // namespace objects

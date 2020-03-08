@@ -42,7 +42,7 @@ public:
     EMPTY_SETUP_NO_ARGS()
 
     void update(const GameTime& gameTime);
-    void render(const graphics::Context& context);
+    void render(const graphics::RenderContext& context) const;
 
     void destroy();
 

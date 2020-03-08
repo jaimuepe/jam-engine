@@ -110,14 +110,7 @@ void Game::update()
 {
     // TODO change to callbacks instead of polling?
     processInput();
-
-    for (auto& entity : m_world->getEntities())
-    {
-        if (entity->isUpdateable())
-        {
-            entity->update(m_gameTime);
-        }
-    }
+    m_world->update(m_gameTime);
 }
 
 void Game::render()
@@ -147,17 +140,11 @@ void Game::render()
 
         glDisable(GL_SCISSOR_TEST);
 
-        graphics::Context gContext;
+        graphics::RenderContext gContext;
         gContext.view = cam->getView();
         gContext.projection = cam->getProjection();
 
-        for (auto& entity : m_world->getEntities())
-        {
-            if (entity->isRenderable())
-            {
-                entity->render(gContext);
-            }
-        }
+        m_world->renderEntities(gContext);
     }
 }
 

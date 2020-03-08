@@ -5,8 +5,7 @@
 
 int main()
 {
-
-    logging::setLevel(logging::level::debug);
+    logging::setupLogger();
 
     Game game;
     return 0;

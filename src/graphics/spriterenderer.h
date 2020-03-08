@@ -25,7 +25,7 @@ public:
 
     void setup() override;
 
-    virtual void render(const graphics::Context& context) override;
+    virtual void render(const graphics::RenderContext& context) const override;
 
     void setShader(const std::string& shader);
 

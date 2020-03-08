@@ -5,7 +5,9 @@ set(TARGET_NAME jam-engine)
 
 project(${TARGET_NAME} C CXX)
 
-set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -18,14 +20,7 @@ find_package(X11 REQUIRED)
 find_package(Threads REQUIRED)
 find_package(Boost COMPONENTS filesystem REQUIRED)
 
-add_compile_definitions(MYs_DEBUG)
-
-include_directories(
-    src
-    thirdParty/glad/include
-    thirdParty/glfw3/include
-    thirdParty/glm
-    ${Boost_INCLUDE_DIR})
+# add_compile_definitions(MYs_DEBUG)
 
 set(SOURCE_FILES
     src/main.cpp
@@ -64,15 +59,21 @@ set(SOURCE_FILES
     src/utils/logger.h
     src/utils/macros.h)
 
-add_subdirectory(thirdParty/glad)
-add_subdirectory(thirdParty/glfw3)
-add_subdirectory(thirdParty/glm)
-add_subdirectory(thirdParty/spdlog)
-add_subdirectory(thirdParty/stb)
+add_executable(${TARGET_NAME} "")
 
-add_executable(
+target_sources(
     ${TARGET_NAME}
+    PRIVATE
     ${SOURCE_FILES})
+
+target_include_directories(
+    ${TARGET_NAME}
+    PRIVATE
+    src)
+
+add_subdirectory(extern)
+add_subdirectory(thirdParty/glad)
+add_subdirectory(thirdParty/stb)
 
 if(MSVC)
     target_compile_options(${TARGET_NAME} PRIVATE /W4)
@@ -81,26 +82,25 @@ else()
            -pedantic-errors -Wall -Wextra -Wconversion -Wsign-conversion)
 endif()
 
-message(STATUS "CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR}")
-
 if (EXISTS "${CMAKE_SOURCE_DIR}/resources")
-	add_custom_target(copy-resources ALL
-		COMMAND ${CMAKE_COMMAND} -E remove_directory
-			"$<TARGET_FILE_DIR:${PROJECT_NAME}>/resources"
-		COMMAND ${CMAKE_COMMAND} -E copy_directory
-			"${CMAKE_SOURCE_DIR}/resources"
-			"$<TARGET_FILE_DIR:${PROJECT_NAME}>/resources"
-		COMMENT "Copy res directory to build tree"
-		VERBATIM)
+    add_custom_target(copy-resources ALL
+        COMMAND ${CMAKE_COMMAND} -E remove_directory
+                "$<TARGET_FILE_DIR:${PROJECT_NAME}>/resources"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                "${CMAKE_SOURCE_DIR}/resources"
+                "$<TARGET_FILE_DIR:${PROJECT_NAME}>/resources"
+        COMMENT "Copy res directory to build tree"
+        VERBATIM)
 endif()
 
 target_link_libraries(
     ${TARGET_NAME}
     PRIVATE 
-	glad 
-	stb
+    stb
+    glad
+    glm
     glfw
-    spdlog::spdlog
+    spdlog
     ${CMAKE_DL_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
     ${X11_LIBRARIES}

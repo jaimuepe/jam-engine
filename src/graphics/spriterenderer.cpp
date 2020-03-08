@@ -33,7 +33,7 @@ void SpriteRenderer::setup()
 
 }
 
-void SpriteRenderer::render(const graphics::Context& context)
+void SpriteRenderer::render(const graphics::RenderContext& context) const
 {
     glm::vec2 position = m_owner.transform.getPosition();
     float rotation = m_owner.transform.getRotation();

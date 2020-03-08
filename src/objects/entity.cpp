@@ -39,7 +39,7 @@ void Entity::update(const GameTime& gameTime)
     }
 }
 
-void Entity::render(const graphics::Context& context)
+void Entity::render(const graphics::RenderContext& context) const
 {
     for (auto &comp : m_components)
     {

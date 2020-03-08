@@ -7,6 +7,10 @@
 
 #include "game.h"
 
+#include "gametime.h"
+
+#include "graphics/rendercontext.h"
+
 #include "objects/entity.h"
 
 #include "utils/macros.h"
@@ -40,7 +44,9 @@ public:
     void setMainCamera(graphics::Camera* mainCamera);
     graphics::Camera* getMainCamera() const;
 
-    std::vector<objects::Entity*> getEntities() const;
+    void renderEntities(const graphics::RenderContext& context) const;
+
+    void update(const GameTime& gameTime);
 
 private:
 
