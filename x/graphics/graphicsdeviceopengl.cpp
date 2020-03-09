@@ -70,7 +70,7 @@ void GraphicsDeviceOpenGL::getSize(int& width, int& height) const
 }
 
 
-void GraphicsDeviceOpenGL::setFullscreen(bool fullscreen)
+void GraphicsDeviceOpenGL::setFullscreen(bool)
 {
     // TODO
 }
@@ -105,7 +105,7 @@ void GraphicsDeviceOpenGL::glfwWindowCloseCallback(GLFWwindow* glfwWindow)
     }
 }
 
-void GraphicsDeviceOpenGL::glfwFramebufferSizeCallback(GLFWwindow *glfwWindow, int width, int height)
+void GraphicsDeviceOpenGL::glfwFramebufferSizeCallback(GLFWwindow *, int width, int height)
 {
     float fWidth = static_cast<float>(width);
     float fHeight = static_cast<float>(height);

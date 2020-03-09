@@ -18,7 +18,10 @@ set(OPENGL ON CACHE BOOL "" FORCE)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(X11 REQUIRED)
+if (UNIX)
+    find_package(X11 REQUIRED)
+endif()
+
 find_package(Threads REQUIRED)
 find_package(Boost COMPONENTS filesystem REQUIRED)
 
@@ -63,8 +66,21 @@ set(SOURCE_FILES
 set(COMPILE_DEFINITIONS
     STB_IMAGE_IMPLEMENTATION)
 
-if (OPENGL)
+set(TARGET_LIBRARIES
+    glm
+    spdlog
+    stb
+    ${CMAKE_DL_LIBS}
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_TYPEINDEX_LIBRARY})
 
+if (UNIX)
+    list(APPEND TARGET_LIBRARIES
+        ${X11_LIBRARIES})
+endif()
+
+if (OPENGL)
     list(APPEND SOURCE_FILES
         x/graphics/graphicsdeviceopengl.cpp
         x/graphics/shaderopengl.cpp
@@ -78,6 +94,9 @@ if (OPENGL)
     list(APPEND COMPILE_DEFINITIONS OPENGL)
     list(APPEND COMPILE_DEFINITIONS GLFW_INCLUDE_NONE)
 
+    list(APPEND TARGET_LIBRARIES
+        glfw
+        glad)
 endif()
 
 add_library(${TARGET_NAME} ${SOURCE_FILES} ${HEADER_FILES})
@@ -97,8 +116,6 @@ else()
            -pedantic-errors -Wall -Wextra -Wconversion -Wsign-conversion)
 endif()
 
-# I'm gonna keep it for now, but it's making the compilation very long
-# add_subdirectory(extern)
 add_subdirectory(thirdParty/glad)
 add_subdirectory(thirdParty/glfw-3.3.2)
 add_subdirectory(thirdParty/glm-0.9.9.7)
@@ -107,14 +124,4 @@ add_subdirectory(thirdParty/stb)
 
 target_link_libraries(
     ${TARGET_NAME}
-    PUBLIC
-    glm
-    glfw
-    spdlog
-    stb
-    glad
-    ${CMAKE_DL_LIBS}
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${X11_LIBRARIES}
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${Boost_TYPEINDEX_LIBRARY})
+    ${TARGET_LIBRARIES})
