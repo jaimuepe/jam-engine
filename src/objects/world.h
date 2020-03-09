@@ -31,18 +31,15 @@ class World
 
 public:
 
-    World() = default;
+    World(Game* game);
 
     CLASS_NON_COPYABLE(World)
 
     ~World();
 
-    void setup(Game* game);
+    void init();
 
     objects::Entity* create(const std::string& name);
-
-    void setMainCamera(graphics::Camera* mainCamera);
-    graphics::Camera* getMainCamera() const;
 
     void renderEntities(const graphics::RenderContext& context) const;
 

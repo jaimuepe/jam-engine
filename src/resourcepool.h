@@ -11,6 +11,8 @@
 #include "graphics/texture2d.h"
 #include "graphics/shader.h"
 
+#include "utils/xplatformdefinitions.h"
+
 class ResourcePool
 {
 public:
@@ -19,10 +21,10 @@ public:
     clear();
     CLASS_DESTRUCTOR_END()
 
-    void setup();
+    void init();
 
-    graphics::Shader loadShader(const char* vShaderFile, const char* fShaderFile, const std::string& shaderName);
-    graphics::Shader getShader(const std::string& shaderName);
+    graphics::ShaderImpl loadShader(const char* vShaderFile, const char* fShaderFile, const std::string& shaderName);
+    graphics::ShaderImpl getShader(const std::string& shaderName);
 
     void loadTexture(const char* textureFile, const std::string& texName);
     graphics::Texture2D getTexture(const std::string& texName);
@@ -31,7 +33,7 @@ public:
 
 private:
 
-    std::map<std::string, graphics::Shader> m_shaders;
+    std::map<std::string, graphics::ShaderImpl> m_shaders;
     std::map<std::string, graphics::Texture2D> m_textures;
 };
 

@@ -1,4 +1,4 @@
-#include "entity.h"
+#include "objects/entity.h"
 
 #include "gametime.h"
 

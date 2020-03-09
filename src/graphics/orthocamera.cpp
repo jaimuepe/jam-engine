@@ -4,15 +4,15 @@
 
 #include "objects/entity.h"
 
-#include "window.h"
+#include "utils/constants.h"
 
 namespace graphics
 {
 
 OrthoCamera::OrthoCamera(objects::Entity& m_owner): Camera(m_owner), m_size(1.0f)
 {
-    m_halfWidth = 0.5f * m_size * internalResolutionX;
-    m_halfHeight = 0.5f * m_size * internalResolutionY;
+    m_halfWidth = 0.5f * m_size * constants::renderdevices::internalDeviceWidth;
+    m_halfHeight = 0.5f * m_size * constants::renderdevices::internalDeviceHeight;
 }
 
 void OrthoCamera::setSize(float size)
@@ -21,8 +21,8 @@ void OrthoCamera::setSize(float size)
     {
         m_size = size;
 
-        m_halfWidth = 0.5f * size * internalResolutionX;
-        m_halfHeight = 0.5f * size * internalResolutionY;
+        m_halfWidth = 0.5f * size * constants::renderdevices::internalDeviceWidth;
+        m_halfHeight = 0.5f * size * constants::renderdevices::internalDeviceHeight;
     }
 }
 

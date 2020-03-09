@@ -3,6 +3,16 @@
 
 #include "gametime.h"
 
+#include "gameinitdata.h"
+
+#include "graphics/graphicsdevice.h"
+
+namespace graphics
+{
+struct RenderContext;
+class Camera;
+}
+
 namespace io
 {
 class Input;
@@ -23,15 +33,23 @@ public:
     Game();
     ~Game();
 
-    void loadResources();
-    void start();
+    void init(const GameInitData& data = GameInitData());
+    void run();
+
+    virtual void loadResources() = 0;
+    virtual void prepareWorld() = 0;
 
     void update();
-    void render();
+    virtual void render(const graphics::RenderContext& renderContext) = 0;
 
-    Window* getWindow() const
+    void exit()
     {
-        return m_window;
+        shouldClose = true;
+    }
+
+    void setMainCamera(graphics::Camera* camera)
+    {
+        m_mainCamera = camera;
     }
 
     io::Input* getInput() const
@@ -44,17 +62,25 @@ public:
         return m_resourcePool;
     }
 
-private:
+    graphics::GraphicsDevice* getGraphicsDevice()
+    {
+        return m_graphicsDevice;
+    }
+
+protected:
+
+    bool shouldClose = false;
 
     GameTime m_gameTime;
 
-    Window* m_window;
+    graphics::GraphicsDevice* m_graphicsDevice;
+
+    graphics::Camera* m_mainCamera;
+
     ResourcePool* m_resourcePool;
 
     io::Input* m_input;
     objects::World* m_world;
-
-    void processInput();
 };
 
 #endif // GAME_H

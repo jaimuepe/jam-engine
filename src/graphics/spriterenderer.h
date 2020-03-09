@@ -7,6 +7,8 @@
 
 #include "objects/component.h"
 
+#include "utils/xplatformdefinitions.h"
+
 #include "graphics/shader.h"
 #include "graphics/texture2d.h"
 
@@ -25,11 +27,11 @@ public:
 
     void setup() override;
 
-    virtual void render(const graphics::RenderContext& context) const override;
+    virtual void render(const graphics::RenderContext& context) override;
 
     void setShader(const std::string& shader);
 
-    void setShader(const Shader& shader);
+    void setShader(const ShaderImpl& shader);
 
     void setTexture(const std::string& texName);
 
@@ -44,7 +46,7 @@ private:
     GLuint m_vao;
     GLuint m_vbo;
 
-    Shader m_shader;
+    ShaderImpl m_shader;
 
     GLfloat m_vertices[16] = {
         // Pos      // Tex

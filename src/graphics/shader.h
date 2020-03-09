@@ -13,24 +13,19 @@ class Shader
 
 public:
 
-    unsigned int getID() const;
+    virtual void compile(const char* vCode, const char* fCode) = 0;
 
-    void compile(const char* vCode, const char* fCode);
+    virtual void use() = 0;
 
-    // Activates the shader
-    void use() const;
+    virtual void deleteShader() = 0;
 
-    // uniform functions
-    void setFloat(const char* name, float value) const;
+    virtual void setFloat(const char* name, float value) = 0;
 
-    void setInt(const char* name, int value) const;
+    virtual void setInt(const char* name, int value) = 0;
 
-    void setVec3(const char* name, const glm::vec3& value) const;
+    virtual void setVec3(const char* name, const glm::vec3& value) = 0;
 
-    void setMat4(const char* name, const glm::mat4& value) const;
-
-private:
-    unsigned int m_ID;
+    virtual void setMat4(const char* name, const glm::mat4& value) = 0;
 
 };
 

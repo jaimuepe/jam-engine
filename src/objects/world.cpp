@@ -1,4 +1,4 @@
-#include "world.h"
+#include "objects/world.h"
 
 #include "objects/constructorContext.h"
 
@@ -6,12 +6,16 @@
 
 #include "gametime.h"
 
+#include "graphics/camera.h"
+
 #include "game.h"
 
 #include "io/input.h"
 
 namespace objects
 {
+
+World::World(Game* game): m_game(game) {}
 
 World::~World()
 {
@@ -21,9 +25,9 @@ World::~World()
     }
 }
 
-void World::setup(Game* game)
+void World::init()
 {
-    m_game = game;
+
 }
 
 Entity* World::create(const std::string &name)
@@ -63,16 +67,6 @@ void World::renderEntities(const graphics::RenderContext& context) const
             entity->render(context);
         }
     }
-}
-
-graphics::Camera* World::getMainCamera() const
-{
-    return m_mainCamera;
-}
-
-void World::setMainCamera(graphics::Camera *mainCamera)
-{
-    m_mainCamera = mainCamera;
 }
 
 } // namespace objects

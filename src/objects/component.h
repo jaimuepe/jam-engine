@@ -28,7 +28,7 @@ public:
 
     virtual void update(const GameTime& gameTime);
 
-    virtual void render(const graphics::RenderContext& context) const;
+    virtual void render(const graphics::RenderContext& context);
 
     bool isRenderable()
     {

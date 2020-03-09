@@ -17,21 +17,25 @@ namespace io
 {
 
 typedef std::function<void(float, float)> cursorPosCallback;
-typedef std::function<void(float, float)> scrollCallback;
+typedef std::function<void(float)> scrollCallback;
 
 class Input
 {
 public:
 
-    Input() = default;
+    Input(Game* game);
 
     CLASS_NON_COPYABLE(Input)
 
-    void setup(Game* game);
+    virtual void init() = 0;
 
     void addCursorPosCallback(const cursorPosCallback& callback);
 
+    void notifyCursorCallbacks(float x, float y) const;
+
     void addScrollCallback(const scrollCallback& callback);
+
+    void notifyScrollCallbacks(float deltaScroll) const;
 
     bool isKeyDown(int key) const;
 
@@ -41,17 +45,14 @@ public:
 
     bool isKeyUp(int key) const;
 
-private:
+protected:
+
+    Game* m_game;
 
     int m_keyState[KEY_LAST]{};
 
     std::vector<cursorPosCallback> m_mouseMovedCallbacks;
     std::vector<scrollCallback> m_scrollCallbacks;
-
-    static void glfwScrollCallback(GLFWwindow*, double xOffset, double yOffset);
-
-    static void glfwCursorPosCallback(GLFWwindow*, double xPos, double yPos);
-    static void glfwKeyCallback(GLFWwindow*, int key, int scancode, int action, int mods);
 };
 
 } // namespace io

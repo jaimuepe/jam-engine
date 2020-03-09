@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.9)
 
-project(Glad)
+project(glad)
 
 set(SOURCE_FILES
     include/KHR/khrplatform.h

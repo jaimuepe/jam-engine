@@ -1,8 +1,6 @@
 
 #include "io/input.h"
 
-#include "window.h"
-
 #include "game.h"
 
 #include "utils/logger.h"
@@ -11,16 +9,7 @@ namespace io
 
 {
 
-void Input::setup(Game* game)
-{
-    GLFWwindow* window =  game->getWindow()->getGLFWWindow();
-
-    glfwSetCursorPosCallback(window, Input::glfwCursorPosCallback);
-
-    glfwSetScrollCallback(window, Input::glfwScrollCallback);
-
-    glfwSetKeyCallback(window, Input::glfwKeyCallback);
-}
+Input::Input(Game* game): m_game(game) {}
 
 bool Input::isKeyDown(int key) const
 {
@@ -42,66 +31,29 @@ bool Input::isKeyUp(int key) const
     return m_keyState[key] == GLFW_RELEASE;
 }
 
-void Input::addCursorPosCallback(const cursorPosCallback& callback)
+void Input::addCursorPosCallback(const cursorPosCallback &callback)
 {
     m_mouseMovedCallbacks.push_back(callback);
 }
 
+void Input::notifyCursorCallbacks(float x, float y) const
+{
+    for (size_t i = 0; i < m_mouseMovedCallbacks.size(); i++)
+    {
+        m_mouseMovedCallbacks[i](x, y);
+    }
+}
+
 void Input::addScrollCallback(const scrollCallback &callback)
 {
-
     m_scrollCallbacks.push_back(callback);
 }
 
-void Input::glfwKeyCallback(GLFWwindow* window, int key, int, int action, int)
+void Input::notifyScrollCallbacks(float deltaScroll) const
 {
-
-    Game* game = static_cast<Game*>(glfwGetWindowUserPointer(window));
-    Input* input = game->getInput();
-
-    if (input)
+    for (size_t i = 0; i < m_scrollCallbacks.size(); i++)
     {
-        input->m_keyState[key] = action;
-    }
-}
-
-void Input::glfwCursorPosCallback(GLFWwindow* window, double posX, double posY)
-{
-
-    Game* game = static_cast<Game*>(glfwGetWindowUserPointer(window));
-    Input* input = game->getInput();
-
-    if (input)
-    {
-
-        float x = (float) posX;
-        float y = (float) posY;
-
-        std::vector<cursorPosCallback> callbacks = input->m_mouseMovedCallbacks;
-
-        for (size_t i = 0; i < callbacks.size(); i++)
-        {
-            callbacks[i](x, y);
-        }
-    }
-}
-
-void Input::glfwScrollCallback(GLFWwindow* window, double xOffset, double)
-{
-    Game* game = static_cast<Game*>(glfwGetWindowUserPointer(window));
-    Input* input = game->getInput();
-
-    if (input)
-    {
-        float x = (float) xOffset;
-        float y = (float) xOffset;
-
-        std::vector<cursorPosCallback> callbacks = input->m_scrollCallbacks;
-
-        for (size_t i = 0; i < callbacks.size(); i++)
-        {
-            callbacks[i](x, y);
-        }
+        m_scrollCallbacks[i](deltaScroll);
     }
 }
 

@@ -6,6 +6,16 @@
 namespace constants
 {
 
+namespace renderdevices
+{
+
+constexpr float internalDeviceWidth = 1920.0f;
+constexpr float internalDeviceHeight = 1080.0f;
+constexpr float internalAspectRatio = internalDeviceWidth / internalDeviceHeight;
+
+} // namespace renderdevices
+
+
 namespace math
 {
 

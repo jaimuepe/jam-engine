@@ -1,4 +1,4 @@
-#include "spriterenderer.h"
+#include "graphics/spriterenderer.h"
 
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -33,7 +33,7 @@ void SpriteRenderer::setup()
 
 }
 
-void SpriteRenderer::render(const graphics::RenderContext& context) const
+void SpriteRenderer::render(const graphics::RenderContext& context)
 {
     glm::vec2 position = m_owner.transform.getPosition();
     float rotation = m_owner.transform.getRotation();
@@ -72,25 +72,6 @@ void SpriteRenderer::render(const graphics::RenderContext& context) const
     glBindVertexArray(m_vao);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-#ifdef MY_DEBUG
-
-    static graphics::Shader debugShader = owner.getResourcePool()->getShader("spriteRendererDebug");
-
-    debugShader.use();
-    debugShader.setMat4("model", model);
-    debugShader.setMat4("view", context.view);
-    debugShader.setMat4("projection", context.projection);
-
-    GLint polygonMode;
-    glGetIntegerv(GL_POLYGON_MODE, &polygonMode);
-
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-    glPolygonMode(GL_FRONT_AND_BACK, static_cast<GLenum>(polygonMode));
-
-#endif
-
     glBindVertexArray(0);
 }
 
@@ -99,7 +80,7 @@ void SpriteRenderer::setShader(const std::string& texName)
     m_shader = m_owner.getResourcePool()->getShader(texName);
 }
 
-void SpriteRenderer::setShader(const Shader& shader)
+void SpriteRenderer::setShader(const ShaderImpl& shader)
 {
     m_shader = shader;
 }

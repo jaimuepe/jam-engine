@@ -4,7 +4,6 @@
 #include <iostream>
 #include <sstream>
 
-#define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 
 #include "glad/glad.h"
@@ -19,16 +18,16 @@
 
 static const std::string resourcesPath = boost::dll::program_location().parent_path().string() + "/resources/";
 
-void ResourcePool::setup()
+void ResourcePool::init()
 {
     loadTexture("fallback/nullTexture.png", "__nullTexture");
 }
 
 void ResourcePool::clear()
 {
-    for(std::map<std::string, graphics::Shader>::iterator itr = m_shaders.begin(); itr != m_shaders.end(); itr++)
+    for(auto itr = m_shaders.begin(); itr != m_shaders.end(); itr++)
     {
-         glDeleteProgram(itr->second.getID());
+        itr->second.deleteShader();
     }
     m_shaders.clear();
 
@@ -40,9 +39,8 @@ void ResourcePool::clear()
     m_textures.clear();
 }
 
-graphics::Shader ResourcePool::loadShader(const char* vShaderFile, const char* fShaderFile, const std::string& shaderName)
+graphics::ShaderImpl ResourcePool::loadShader(const char* vShaderFile, const char* fShaderFile, const std::string& shaderName)
 {
-
     static const std::string shadersPath = resourcesPath + "shaders/";
 
     const std::string vPath = shadersPath + vShaderFile;
@@ -75,7 +73,7 @@ graphics::Shader ResourcePool::loadShader(const char* vShaderFile, const char* f
         std::cout << "ERROR::SHADER: Failed to read shader files" << std::endl;
     }
 
-    graphics::Shader shader;
+    graphics::ShaderImpl shader;
     shader.compile(vertexCode.c_str(), fragmentCode.c_str());
 
     m_shaders[shaderName] = shader;
@@ -83,9 +81,9 @@ graphics::Shader ResourcePool::loadShader(const char* vShaderFile, const char* f
     return shader;
 }
 
-graphics::Shader ResourcePool::getShader(const std::string& shaderName)
+graphics::ShaderImpl ResourcePool::getShader(const std::string& shaderName)
 {
-    return m_shaders[shaderName];
+    return m_shaders.at(shaderName);
 }
 
 void ResourcePool::loadTexture(const char* textureFile, const std::string& texName)
