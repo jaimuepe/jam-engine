@@ -1,2 +1,2 @@
 # jam-engine
-A very dirty 2d engine in c++ and OpenGL. Needs a lot of work.
+A 2d engine in c++ and OpenGL I started after completing the LearnOpenGL tutorials. I haven't worked on it for a while.
